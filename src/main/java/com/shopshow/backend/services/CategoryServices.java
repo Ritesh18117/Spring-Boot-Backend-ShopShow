@@ -1,7 +1,7 @@
 package com.shopshow.backend.services;
 
-import com.shopshow.backend.dao.CustomerRepository;
-import com.shopshow.backend.entities.Customer;
+import com.shopshow.backend.dao.CategoryRepository;
+import com.shopshow.backend.entities.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,26 +12,27 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class CustomerService {
+public class CategoryServices {
     @Autowired
-    private CustomerRepository customerRepository;
+    private CategoryRepository categoryRepository;
 
-    public ResponseEntity<List<Customer>> getAllCustomer(){
+    public ResponseEntity<List<Category>> getAllCategory(){
         try{
-            List<Customer> customers = (List<Customer>) customerRepository.findAll();
-            if(customers.size() <= 0)
+            List<Category> categories = (List<Category>) categoryRepository.findAll();
+            if(categories.size() <= 0){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            return ResponseEntity.of(Optional.of(customers));
+            }
+            return ResponseEntity.of(Optional.of(categories));
         } catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    public ResponseEntity<Customer> addCustomer(@RequestBody Customer customer){
+    public ResponseEntity<Category> addCategory(@RequestBody Category category){
         try{
-            customerRepository.save(customer);
-            return ResponseEntity.of(Optional.of(customer));
+            categoryRepository.save(category);
+            return ResponseEntity.of(Optional.of(category));
         } catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
