@@ -2,14 +2,17 @@ package com.shopshow.backend.REST;
 
 import com.shopshow.backend.entities.Seller;
 import com.shopshow.backend.services.SellerService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/seller")
+@Validated
 public class SellerController {
     @Autowired
     private SellerService sellerService;
@@ -28,7 +31,7 @@ public class SellerController {
     }
 
     @PostMapping("/newSeller")
-    public ResponseEntity<Seller> newSeller(@RequestBody Seller seller){
+    public ResponseEntity<Seller> newSeller(@Valid @RequestBody Seller seller){
         return sellerService.newSeller(seller);
     }
 }

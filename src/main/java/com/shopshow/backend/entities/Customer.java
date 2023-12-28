@@ -1,9 +1,10 @@
 package com.shopshow.backend.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Size;
 
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "customers")
@@ -12,7 +13,14 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "customer_id")
     private Long id;
+    @NotNull(message = "Email cannot be null")
+    @NotBlank(message = "Email cannot be blank")
+    @Email(message = "Invalid email format")
     private String email;
+    @NotNull(message = "Password cannot be null")
+    @NotBlank(message = "Password must not be blank")
+    @Size(min = 8, message = "Size must be atleast of 8 Character")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",message = "Password Constraint Violation")
     private String password;
     private String contact;
     private String name;

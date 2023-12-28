@@ -2,6 +2,7 @@ package com.shopshow.backend.services;
 
 import com.shopshow.backend.dao.SellerRepository;
 import com.shopshow.backend.entities.Seller;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

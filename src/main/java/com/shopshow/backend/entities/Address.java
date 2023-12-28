@@ -1,6 +1,8 @@
 package com.shopshow.backend.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "addresses")
@@ -11,9 +13,17 @@ public class Address {
     private Long id;
     private String address1;
     private String address2;
+    @NotNull(message = "City cannot be null")
+    @NotBlank(message = "City must not be Blank!")
     private String city;
+    @NotNull(message = "State cannot be null")
+    @NotBlank(message = "State must not be Blank!")
     private String state;
+    @NotNull(message = "Country cannot be null")
+    @NotBlank(message = "Country must not be Blank!")
     private String country;
+    @NotNull(message = "Zipcode cannot be null")
+    @NotBlank(message = "Zipcode must not be Blank!")
     private String zipcode;
 
     public Address() {

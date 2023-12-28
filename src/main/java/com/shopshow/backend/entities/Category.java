@@ -1,6 +1,8 @@
 package com.shopshow.backend.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "categories")
@@ -9,6 +11,8 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "category_id")
     private Long id;
+    @NotNull(message = "Category Name cannot be null")
+    @NotBlank(message = "Category Name must not be Blank!")
     private String categoryName;
     private String description;
 

@@ -1,6 +1,8 @@
 package com.shopshow.backend.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "products")
@@ -15,9 +17,15 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
+    @NotNull(message = "Product Name cannot be null")
+    @NotBlank(message = "Product Name must not be Blank!")
     private String name;
+    @NotNull(message = "Price cannot be null")
+    @NotBlank(message = "Price must not be Blank!")
     private Double price;
     private Double discount;
+    @NotNull(message = "Margin cannot be null")
+    @NotBlank(message = "Margin must not be Blank!")
     private Double margin;
     private String gender;
     private String description;
