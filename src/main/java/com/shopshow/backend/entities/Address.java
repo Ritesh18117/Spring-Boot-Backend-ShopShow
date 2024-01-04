@@ -11,6 +11,9 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "address_id")
     private Long id;
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
     private String address1;
     private String address2;
     @NotNull(message = "City cannot be null")
@@ -29,7 +32,8 @@ public class Address {
     public Address() {
     }
 
-    public Address(Long id, String address1, String address2, String city, String state, String country, String pincode) {
+    public Address(Long id, Customer customer, String address1, String address2, String city, String state, String country, String pincode) {
+        this.customer = customer;
         this.id = id;
         this.address1 = address1;
         this.address2 = address2;
@@ -45,6 +49,14 @@ public class Address {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public String getAddress1() {
