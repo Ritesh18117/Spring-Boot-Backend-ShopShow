@@ -1,8 +1,6 @@
 package com.shopshow.backend.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-import jakarta.validation.constraints.Size;
 
 import java.util.Date;
 
@@ -13,15 +11,18 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "customer_id")
     private Long id;
-    @NotNull(message = "Email cannot be null")
-    @NotBlank(message = "Email cannot be blank")
-    @Email(message = "Invalid email format")
-    private String email;
-    @NotNull(message = "Password cannot be null")
-    @NotBlank(message = "Password must not be blank")
-    @Size(min = 8, message = "Size must be atleast of 8 Character")
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",message = "Password Constraint Violation")
-    private String password;
+//    @NotNull(message = "Email cannot be null")
+//    @NotBlank(message = "Email cannot be blank")
+//    @Email(message = "Invalid email format")
+//    private String email;
+//    @NotNull(message = "Password cannot be null")
+//    @NotBlank(message = "Password must not be blank")
+//    @Size(min = 8, message = "Size must be atleast of 8 Character")
+//    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",message = "Password Constraint Violation")
+//    private String password;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
     private String contact;
     private String name;
     private String gender;
@@ -31,10 +32,9 @@ public class Customer {
     public Customer() {
     }
 
-    public Customer(Long id, String email, String password, String contact, String name, String gender, Date dateOfBirth) {
+    public Customer(Long id, User user, String contact, String name, String gender, Date dateOfBirth) {
         this.id = id;
-        this.email = email;
-        this.password = password;
+        this.user = user;
         this.contact = contact;
         this.name = name;
         this.gender = gender;
@@ -49,20 +49,12 @@ public class Customer {
         this.id = id;
     }
 
-    public String getEmail() {
-        return email;
+    public User getUser() {
+        return user;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getContact() {

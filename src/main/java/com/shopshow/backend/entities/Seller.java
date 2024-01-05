@@ -1,8 +1,6 @@
 package com.shopshow.backend.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "sellers")
@@ -11,15 +9,18 @@ public class Seller {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "seller_id")
     private Long sellerId;
-    @NotNull(message = "Email cannot be null")
-    @NotBlank(message = "Email cannot be blank")
-    @Email(message = "Invalid email format")
-    private String email;
-    @NotNull(message = "Password cannot be null")
-    @NotBlank(message = "Password must not be blank")
-    @Size(min = 8, message = "Size must be atleast of 8 Character")
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$")
-    private String password;
+//    @NotNull(message = "Email cannot be null")
+//    @NotBlank(message = "Email cannot be blank")
+//    @Email(message = "Invalid email format")
+//    private String email;
+//    @NotNull(message = "Password cannot be null")
+//    @NotBlank(message = "Password must not be blank")
+//    @Size(min = 8, message = "Size must be atleast of 8 Character")
+//    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$")
+//    private String password;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
     private String contactInfo;
     @Column(name = "company_name")
     private String companyName;
@@ -35,11 +36,10 @@ public class Seller {
     public Seller() {
     }
 
-    public Seller(Long sellerId, String email, String password, String contactInfo, String companyName,
+    public Seller(Long sellerId, User user, String contactInfo, String companyName,
                   String companyType, String gstNumber, String licenceNumber, String address, String approvalStatus) {
         this.sellerId = sellerId;
-        this.email = email;
-        this.password = password;
+        this.user = user;
         this.contactInfo = contactInfo;
         this.companyName = companyName;
         this.companyType = companyType;
@@ -57,20 +57,12 @@ public class Seller {
         this.sellerId = sellerId;
     }
 
-    public String getEmail() {
-        return email;
+    public User getUser() {
+        return user;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getContactInfo() {
