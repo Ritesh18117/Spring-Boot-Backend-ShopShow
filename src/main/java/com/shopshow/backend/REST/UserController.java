@@ -6,7 +6,6 @@ import com.shopshow.backend.services.JwtService;
 import com.shopshow.backend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -30,11 +29,6 @@ public class UserController {
         return "This is test for User request";
     }
 
-    @GetMapping("/getAll")
-    public ResponseEntity<List<User>> getAll(){
-        return userService.getAllUser();
-    }
-
     @PostMapping("/addUser")
     public ResponseEntity<User> addUser(@RequestBody User user){
         return userService.addUser(user);
@@ -50,16 +44,13 @@ public class UserController {
         }
     }
 
-
-    @GetMapping("/userProfile")
-    @PreAuthorize("hasAuthority('ROLE_SELLER')")
-    public String userProfile() {
-        return "Welcome to User Profile";
+    @GetMapping("/getAll")
+    public ResponseEntity<List<User>> getAll(){
+        return userService.getAllUser();
     }
 
-    @GetMapping("/admin/adminProfile")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public String adminProfile() {
-        return "Welcome to Admin Profile";
+    @GetMapping("/userProfile")
+    public String userProfile() {
+        return "Welcome to User Profile";
     }
 }

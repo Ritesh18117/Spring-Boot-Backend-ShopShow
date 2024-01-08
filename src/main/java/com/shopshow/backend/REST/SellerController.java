@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/seller")
@@ -21,17 +21,19 @@ public class SellerController {
         return "This is Seller Test For Route!";
     }
 
-    @GetMapping("/getAll")
-    public ResponseEntity<List<Seller>> getAll(){
-        return sellerService.getAllSeller();
-    }
-    @GetMapping("/id/{id}")
-    public ResponseEntity<Seller> getSellerById(@PathVariable("id") Long id){
-        return sellerService.getSellerById(id);
+    @GetMapping("/id")
+    public ResponseEntity<Optional<Seller>> getSellerById(@RequestHeader(value = "Authorization") String authorizationHeader){
+        System.out.println("HEllo");
+        return sellerService.getSellerById(authorizationHeader);
     }
 
     @PostMapping("/newSeller")
     public ResponseEntity<Seller> newSeller(@Valid @RequestBody Seller seller){
         return sellerService.newSeller(seller);
+    }
+
+    @PatchMapping("/updateProfile")
+    public ResponseEntity<Seller> updateSellerProfile(@RequestBody Seller updatedSeller,@RequestHeader(value = "Authorization") String authorizationHeader){
+        return sellerService.updateSellerProfile(updatedSeller,authorizationHeader);
     }
 }

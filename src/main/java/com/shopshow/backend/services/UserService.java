@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -31,7 +32,12 @@ public class UserService implements UserDetailsService {
     @Autowired
     @Lazy
     private PasswordEncoder encoder;
-
+    @Autowired
+    @Lazy
+    private JwtService jwtService;
+    @Autowired
+    @Lazy
+    private AuthenticationManager authenticationManager;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
@@ -72,4 +78,14 @@ public class UserService implements UserDetailsService {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+//    public String authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
+//        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
+//        if (authentication.isAuthenticated()) {
+//            Optional<User> user = userRepository.findByUsername(authRequest.getUsername());
+//            return jwtService.generateToken(authRequest.getUsername(),user.get().getId());
+//        } else {
+//            throw new UsernameNotFoundException("invalid user request !");
+//        }
+//    }
 }

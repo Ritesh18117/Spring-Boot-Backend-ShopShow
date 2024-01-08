@@ -28,6 +28,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Lazy
     private UserService userService;
 
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
@@ -52,7 +53,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             String newToken = jwtService.generateToken(username); // Assuming username is valid here
             response.setHeader("Authorization", "Bearer " + newToken);
         }
-
+        System.out.println(username + " Hell Yeah");
         filterChain.doFilter(request, response);
     }
 }

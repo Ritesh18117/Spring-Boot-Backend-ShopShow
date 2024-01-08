@@ -20,21 +20,15 @@ public class JwtService {
     public static final String SECRET = "5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437";
     public String generateToken(String userName) {
         Map<String, Object> claims = new HashMap<>();
-        System.out.println("HELLO FROM GENERATETOKEN");
         return createToken(claims, userName);
     }
 
     private String createToken(Map<String, Object> claims, String userName) {
-
-        long expirationTimeMillis = System.currentTimeMillis() + (5 * 24 * 60 * 60 * 1000);
-        System.out.println("HELLO from create Token");
-        System.out.println(System.currentTimeMillis());
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userName)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(expirationTimeMillis))
-//                .setExpiration(new Date(System.currentTimeMillis() + 5 * 24 * 60 * 60 * 1000)) // Extend expiration to 5 days
+                .setExpiration(new Date(System.currentTimeMillis() + (5 * 24 * 60 * 60 * 1000)))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
     }
 

@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/customer")
@@ -22,12 +22,16 @@ public class CustomerController {
         return "This is testing from Customer Controller";
     }
 
-    @GetMapping("/getAll")
-    public ResponseEntity<List<Customer>> getAllCustomer(){
-        return customerService.getAllCustomer();
+    @GetMapping("/id")
+    public ResponseEntity<Optional<Customer>> getCustomerById(@RequestHeader(value = "Authorization") String authorizationHeader){
+        return customerService.getCustomerById(authorizationHeader);
     }
     @PostMapping("/addCustomer")
     public ResponseEntity<Customer> addCustomer(@Valid @RequestBody Customer customer){
         return customerService.addCustomer(customer);
+    }
+    @PatchMapping("/updateCustomer")
+    public ResponseEntity<Customer> updateCustomer(@RequestBody Customer updateCustomer,@RequestHeader(value = "Authorization") String authorizationHeader){
+        return customerService.updateCustomerProfile(updateCustomer,authorizationHeader);
     }
 }
