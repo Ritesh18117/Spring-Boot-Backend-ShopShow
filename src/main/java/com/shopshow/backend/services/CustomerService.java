@@ -44,12 +44,12 @@ public class CustomerService {
         }
     }
 
-    public ResponseEntity<Optional<Customer>> getCustomerById(@RequestHeader(value = "Authorization") String authorizationHeader){
+    public ResponseEntity<Customer> getCustomerById(@RequestHeader(value = "Authorization") String authorizationHeader){
         try{
             String token = extractTokenFromHeader(authorizationHeader);
             String username = jwtService.extractUsername(token);
-            Long userId = userRepository.findByUsername(username).get().getId();
-            Optional<Customer> customer = customerRepository.findByUserId(userId);
+            Long userId = userRepository.findByUsername(username).getId();
+            Customer customer = customerRepository.findByUserId(userId);
             return ResponseEntity.of(Optional.of(customer));
         } catch (Exception e){
             e.printStackTrace();
@@ -59,16 +59,11 @@ public class CustomerService {
 
     public ResponseEntity<Customer> updateCustomerProfile(@RequestBody Customer updatedCustomer, @RequestHeader(value = "Authorization") String authorizationHeader){
         try {
-            Optional<Customer> optionalCustomer = getCustomerById(authorizationHeader).getBody();
-            if (optionalCustomer.isPresent()) {
-                Customer existingSeller = optionalCustomer.get();
-                // Copy updated fields from updatedSeller to existingSeller
-                BeanUtils.copyProperties(updatedCustomer, existingSeller, "id");
-                Customer savedSeller = customerRepository.save(existingSeller);
-                return ResponseEntity.of(Optional.of(savedSeller));
-            } else {
-                return ResponseEntity.notFound().build();
-            }
+            Customer existingSeller = getCustomerById(authorizationHeader).getBody();
+            // Copy updated fields from updatedSeller to existingSeller
+            BeanUtils.copyProperties(updatedCustomer, existingSeller, "id");
+            Customer savedSeller = customerRepository.save(existingSeller);
+            return ResponseEntity.of(Optional.of(savedSeller));
         }catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

@@ -4,12 +4,14 @@ import com.shopshow.backend.entities.Product;
 import com.shopshow.backend.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/product")
+@Validated
 public class ProductController {
     @Autowired
     private ProductService productService;
@@ -25,8 +27,8 @@ public class ProductController {
     }
 
     @PostMapping("/addProduct")
-    public ResponseEntity<Product> addProduct(@RequestBody Product product){
-        return productService.addProduct(product);
+    public ResponseEntity<Product> addProduct(@RequestBody Product product,@RequestHeader(value = "Authorization") String authorizationHeader){
+        return productService.addProduct(product,authorizationHeader);
     }
 }
 

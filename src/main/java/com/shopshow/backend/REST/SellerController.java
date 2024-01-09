@@ -21,9 +21,8 @@ public class SellerController {
         return "This is Seller Test For Route!";
     }
 
-    @GetMapping("/id")
+    @GetMapping("/myProfile")
     public ResponseEntity<Optional<Seller>> getSellerById(@RequestHeader(value = "Authorization") String authorizationHeader){
-        System.out.println("HEllo");
         return sellerService.getSellerById(authorizationHeader);
     }
 

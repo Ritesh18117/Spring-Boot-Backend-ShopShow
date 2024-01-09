@@ -21,11 +21,9 @@ public class Product {
     @NotBlank(message = "Product Name must not be Blank!")
     private String name;
     @NotNull(message = "Price cannot be null")
-    @NotBlank(message = "Price must not be Blank!")
     private Double price;
     private Double discount;
     @NotNull(message = "Margin cannot be null")
-    @NotBlank(message = "Margin must not be Blank!")
     private Double margin;
     private String gender;
     private String description;

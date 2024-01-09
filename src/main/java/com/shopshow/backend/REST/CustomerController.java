@@ -8,8 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @RestController
 @RequestMapping("/api/customer")
 @Validated
@@ -23,7 +21,7 @@ public class CustomerController {
     }
 
     @GetMapping("/id")
-    public ResponseEntity<Optional<Customer>> getCustomerById(@RequestHeader(value = "Authorization") String authorizationHeader){
+    public ResponseEntity<Customer> getCustomerById(@RequestHeader(value = "Authorization") String authorizationHeader){
         return customerService.getCustomerById(authorizationHeader);
     }
     @PostMapping("/addCustomer")

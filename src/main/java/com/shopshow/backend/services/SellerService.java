@@ -51,10 +51,10 @@ public class SellerService {
             String token = extractTokenFromHeader(authorizationHeader);
             String username = jwtService.extractUsername(token);
             System.out.println(username);
-            Long userId = userRepository.findByUsername(username).get().getId();
+            Long userId = userRepository.findByUsername(username).getId();
             System.out.println("Seller Id from id route : " + userId);
-            Optional<Seller> seller =sellerRepository.findByUserId(userId);
-            return ResponseEntity.of(Optional.of(seller));
+            Seller seller =sellerRepository.findByUserId(userId);
+            return ResponseEntity.of(Optional.of(Optional.of(seller)));
         } catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

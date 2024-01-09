@@ -1,4 +1,5 @@
 package com.shopshow.backend.REST;
+
 import com.shopshow.backend.entities.Address;
 import com.shopshow.backend.services.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,11 @@ public class AddressController {
     }
 
     @PostMapping("/addAddress")
-    public ResponseEntity<Address> addAddress(@RequestBody Address address){
-        return addressService.addAddress(address);
+    public ResponseEntity<Address> addAddress(@RequestBody Address address,@RequestHeader(value = "Authorization") String authorizationHeader){
+        return addressService.addAddress(address,authorizationHeader);
+    }
+    @DeleteMapping("/deleteAddress/{id}")
+    public ResponseEntity<String> deleteAddress(@PathVariable("id") long id){
+        return addressService.deleteAddress(id);
     }
 }
