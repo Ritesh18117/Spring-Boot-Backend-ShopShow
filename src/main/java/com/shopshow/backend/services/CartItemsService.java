@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
@@ -60,5 +61,19 @@ public class CartItemsService {
             return authorizationHeader.substring(7); // "Bearer ".length() == 7
         }
         return null; // Return null or handle accordingly if token extraction fails
+    }
+
+    public ResponseEntity<String> removeCartItem(@RequestHeader(value = "Authorization") String authorizationHeader,@PathVariable Long productId) {
+        try{
+            String token = extractTokenFromHeader(authorizationHeader);
+            String username = jwtService.extractUsername(token);
+            Long userId = userRepository.findByUsername(username).getId();
+            Customer customer = customerRepository.findByUserId(userId);
+            cartItemsRepository.deleteByCustomerIdAndProductId(customer.getId(),productId);
+            return ResponseEntity.ok("Item Removed Successfully!!");
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

@@ -29,4 +29,9 @@ public class CartItemsController {
     public ResponseEntity<CartItems> addToCart(@RequestHeader(value = "Authorization") String authorizationHeader, @RequestBody CartItems cartItems) {
         return cartItemsService.addToCart(authorizationHeader, cartItems);
     }
+
+    @DeleteMapping("/removeItem/{product_id}")
+    public ResponseEntity<String> removeItem(@RequestHeader(value = "Authorization") String authorizationHeader,@PathVariable Long product_id){
+        return cartItemsService.removeCartItem(authorizationHeader,product_id);
+    }
 }

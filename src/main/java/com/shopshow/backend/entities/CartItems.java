@@ -6,7 +6,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "cartItems")
-public class Cart {
+public class CartItems {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -19,10 +19,10 @@ public class Cart {
     private int quantity;
     private Date addedDate;
 
-    public Cart() {
+    public CartItems() {
     }
 
-    public Cart(Long id, Customer customer, Product product, int quantity, Date addedDate) {
+    public CartItems(Long id, Customer customer, Product product, int quantity, Date addedDate) {
         this.id = id;
         this.customer = customer;
         this.product = product;
