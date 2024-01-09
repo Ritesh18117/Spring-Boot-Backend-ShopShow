@@ -8,7 +8,7 @@ public class Seller {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "seller_id")
-    private Long sellerId;
+    private Long id;
 //    @NotNull(message = "Email cannot be null")
 //    @NotBlank(message = "Email cannot be blank")
 //    @Email(message = "Invalid email format")
@@ -38,7 +38,7 @@ public class Seller {
 
     public Seller(Long sellerId, User user, String contactInfo, String companyName,
                   String companyType, String gstNumber, String licenceNumber, String address, String approvalStatus) {
-        this.sellerId = sellerId;
+        this.id = sellerId;
         this.user = user;
         this.contactInfo = contactInfo;
         this.companyName = companyName;
@@ -49,12 +49,12 @@ public class Seller {
         this.approvalStatus = approvalStatus;
     }
 
-    public Long getSellerId() {
-        return sellerId;
+    public Long getId() {
+        return id;
     }
 
-    public void setSellerId(Long sellerId) {
-        this.sellerId = sellerId;
+    public void setId(Long sellerId) {
+        this.id = sellerId;
     }
 
     public User getUser() {

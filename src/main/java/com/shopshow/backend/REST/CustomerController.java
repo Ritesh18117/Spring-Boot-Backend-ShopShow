@@ -5,6 +5,7 @@ import com.shopshow.backend.services.CustomerService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,14 +21,17 @@ public class CustomerController {
         return "This is testing from Customer Controller";
     }
 
-    @GetMapping("/id")
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+    @GetMapping("/myProfile")
     public ResponseEntity<Customer> getCustomerById(@RequestHeader(value = "Authorization") String authorizationHeader){
         return customerService.getCustomerById(authorizationHeader);
     }
+
     @PostMapping("/addCustomer")
     public ResponseEntity<Customer> addCustomer(@Valid @RequestBody Customer customer){
         return customerService.addCustomer(customer);
     }
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     @PatchMapping("/updateCustomer")
     public ResponseEntity<Customer> updateCustomer(@RequestBody Customer updateCustomer,@RequestHeader(value = "Authorization") String authorizationHeader){
         return customerService.updateCustomerProfile(updateCustomer,authorizationHeader);

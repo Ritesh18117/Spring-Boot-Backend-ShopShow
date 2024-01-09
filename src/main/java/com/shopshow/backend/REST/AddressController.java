@@ -1,9 +1,7 @@
 package com.shopshow.backend.REST;
 
 import com.shopshow.backend.entities.Address;
-import com.shopshow.backend.entities.Product;
 import com.shopshow.backend.services.AddressService;
-import com.shopshow.backend.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,8 +13,6 @@ import java.util.List;
 public class AddressController {
     @Autowired
     private AddressService addressService;
-    @Autowired
-    private ProductService productService;
 
     @GetMapping("/test")
     public String test(){
@@ -39,9 +35,5 @@ public class AddressController {
     @DeleteMapping("/deleteAddress/{id}")
     public ResponseEntity<String> deleteAddress(@PathVariable("id") long id){
         return addressService.deleteAddress(id);
-    }
-    @GetMapping("/getAllProducts")
-    public ResponseEntity<List<Product>> getAllProduct(){
-        return productService.getAllProduct();
     }
 }

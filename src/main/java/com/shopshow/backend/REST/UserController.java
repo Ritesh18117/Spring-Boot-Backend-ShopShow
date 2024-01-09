@@ -43,14 +43,10 @@ public class UserController {
             throw new UsernameNotFoundException("invalid user request !");
         }
     }
-
+    // It is here for testing
     @GetMapping("/getAll")
     public ResponseEntity<List<User>> getAll(){
         return userService.getAllUser();
     }
 
-    @GetMapping("/userProfile")
-    public String userProfile() {
-        return "Welcome to User Profile";
-    }
 }

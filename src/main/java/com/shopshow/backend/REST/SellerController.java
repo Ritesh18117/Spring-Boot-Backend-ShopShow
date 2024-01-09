@@ -5,6 +5,7 @@ import com.shopshow.backend.services.SellerService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,7 @@ public class SellerController {
         return "This is Seller Test For Route!";
     }
 
+    @PreAuthorize("hasRole('ROLE_SELLER')")
     @GetMapping("/myProfile")
     public ResponseEntity<Optional<Seller>> getSellerById(@RequestHeader(value = "Authorization") String authorizationHeader){
         return sellerService.getSellerById(authorizationHeader);
@@ -31,6 +33,7 @@ public class SellerController {
         return sellerService.newSeller(seller);
     }
 
+    @PreAuthorize("hasRole('ROLE_SELLER')")
     @PatchMapping("/updateProfile")
     public ResponseEntity<Seller> updateSellerProfile(@RequestBody Seller updatedSeller,@RequestHeader(value = "Authorization") String authorizationHeader){
         return sellerService.updateSellerProfile(updatedSeller,authorizationHeader);

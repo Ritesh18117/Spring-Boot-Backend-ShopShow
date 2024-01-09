@@ -1,8 +1,10 @@
 package com.shopshow.backend.services;
 
 import com.shopshow.backend.dao.CustomerRepository;
+import com.shopshow.backend.dao.ProductRepository;
 import com.shopshow.backend.dao.SellerRepository;
 import com.shopshow.backend.entities.Customer;
+import com.shopshow.backend.entities.Product;
 import com.shopshow.backend.entities.Seller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +21,8 @@ public class AdminService {
     private SellerRepository sellerRepository;
     @Autowired
     private CustomerRepository customerRepository;
+    @Autowired
+    private ProductRepository productRepository;
 
     public ResponseEntity<List<Seller>> getAllSeller(){
         try{
@@ -40,6 +44,18 @@ public class AdminService {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
             return ResponseEntity.of(Optional.of(customerList));
+        } catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    public ResponseEntity<List<Product>> getAllProduct(){
+        try{
+            List<Product> products = (List<Product>) productRepository.findAll();
+            if(products.size() <= 0)
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.of(Optional.of(products));
         } catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

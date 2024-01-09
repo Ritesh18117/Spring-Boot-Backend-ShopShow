@@ -26,18 +26,6 @@ public class ProductService {
     @Autowired
     private UserRepository userRepository;
 
-    public ResponseEntity<List<Product>> getAllProduct(){
-        try{
-            List<Product> products = (List<Product>) productRepository.findAll();
-            if(products.size() <= 0)
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            return ResponseEntity.of(Optional.of(products));
-        } catch (Exception e){
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
     public ResponseEntity<Product> addProduct(@RequestBody Product product,@RequestHeader(value = "Authorization") String authorizationHeader){
         try{
             String token = extractTokenFromHeader(authorizationHeader);
@@ -60,5 +48,19 @@ public class ProductService {
             return authorizationHeader.substring(7); // "Bearer ".length() == 7
         }
         return null; // Return null or handle accordingly if token extraction fails
+    }
+
+    public ResponseEntity<List<Product>> myProducts(@RequestHeader(value = "Authorization") String authorizationHeader) {
+        try{
+            String token = extractTokenFromHeader(authorizationHeader);
+            String username = jwtService.extractUsername(token);
+            Long userId = userRepository.findByUsername(username).getId();
+            Seller seller = sellerRepository.findByUserId(userId);
+            List<Product> products = productRepository.findBySeller_Id(seller.getId());
+            return ResponseEntity.of(Optional.of(products));
+        } catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }
