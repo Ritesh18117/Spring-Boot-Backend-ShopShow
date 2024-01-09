@@ -13,12 +13,10 @@ import java.util.List;
 public class SizeController {
     @Autowired
     private SizeService sizeService;
-
     @GetMapping("/test")
     public String test(){
         return "This is the test from Size controller";
     }
-
     @GetMapping("/getAll")
     public ResponseEntity<List<Size>> getAllSize(){
         return sizeService.getAllSize();

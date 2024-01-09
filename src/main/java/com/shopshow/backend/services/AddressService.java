@@ -39,6 +39,19 @@ public class AddressService {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+    public ResponseEntity<List<Address>> myAddresses(@RequestHeader(value = "Authorization") String authorizationHeader){
+        try{
+            String token = extractTokenFromHeader(authorizationHeader);
+            String username = jwtService.extractUsername(token);
+            Long userId = userRepository.findByUsername(username).getId();
+            Customer customer = customerRepository.findByUserId(userId);
+            List<Address> addresses = addressRepository.getAddressesByCustomerId(customer.getId());
+            return ResponseEntity.of(Optional.of(addresses));
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
     public ResponseEntity<Address> addAddress(@RequestBody Address address,@RequestHeader(value = "Authorization") String authorizationHeader){
         try{

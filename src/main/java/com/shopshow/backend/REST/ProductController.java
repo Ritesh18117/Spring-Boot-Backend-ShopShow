@@ -7,8 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/product")
 @Validated
@@ -19,11 +17,6 @@ public class ProductController {
     @GetMapping("/test")
     public String test(){
         return "This is test request from Product controller";
-    }
-
-    @GetMapping("/getAll")
-    public ResponseEntity<List<Product>> getAllProduct(){
-        return productService.getAllProduct();
     }
 
     @PostMapping("/addProduct")
