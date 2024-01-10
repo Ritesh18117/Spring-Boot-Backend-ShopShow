@@ -62,5 +62,23 @@ public class AdminService {
         }
     }
 
-
+//    public ResponseEntity<String> deleteUser(@PathVariable Long id){
+//        try{
+//            Seller seller = sellerRepository.findByUserId(id);
+//            if(seller != null){
+//                sellerRepository.delete(seller);
+//                userRepository.deleteById(id);
+//            }
+//            Customer customer = customerRepository.findByUserId(id);
+//
+//            if(customer != null){
+//                customerRepository.delete(customer);
+//                userRepository.deleteById(id);
+//            }
+//            return ResponseEntity.ok("Deleted Successfully!!");
+//        } catch (Exception e){
+//            e.printStackTrace();
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+//        }
+//    }
 }

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Component
@@ -33,8 +34,14 @@ public class ProductService {
             Long userId = userRepository.findByUsername(username).getId();
             Seller seller = sellerRepository.findByUserId(userId);
             product.setSeller(seller);
-            productRepository.save(product);
-            return ResponseEntity.of(Optional.of(product));
+            product.setApprovalStatus("false");
+            if(Objects.equals(seller.getApprovalStatus(), "true")){
+                productRepository.save(product);
+                return ResponseEntity.of(Optional.of(product));
+            }
+            else{
+                return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
+            }
         } catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -57,6 +64,29 @@ public class ProductService {
             Long userId = userRepository.findByUsername(username).getId();
             Seller seller = sellerRepository.findByUserId(userId);
             List<Product> products = productRepository.findBySeller_Id(seller.getId());
+            return ResponseEntity.of(Optional.of(products));
+        } catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    public ResponseEntity<List<Product>> approvedProduct(){
+        try{
+            List<Product> products = productRepository.findAllByApprovalStatus("true");
+            return ResponseEntity.of(Optional.of(products));
+        } catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    //For testing here Otherwise move to Admin Service
+    public ResponseEntity<List<Product>> getAllProduct(){
+        try{
+            List<Product> products = (List<Product>) productRepository.findAll();
+            if(products.size() <= 0)
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             return ResponseEntity.of(Optional.of(products));
         } catch (Exception e){
             e.printStackTrace();

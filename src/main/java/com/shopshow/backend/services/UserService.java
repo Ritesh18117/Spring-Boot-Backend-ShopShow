@@ -58,6 +58,7 @@ public class UserService implements UserDetailsService {
             if(Objects.equals(user.getRole(), "ROLE_SELLER")){
                 Seller seller = new Seller();
                 seller.setUser(user);
+                seller.setApprovalStatus("false");
                 sellerService.newSeller(seller);
             }
             if(Objects.equals(user.getRole(), "ROLE_CUSTOMER")){
@@ -71,14 +72,4 @@ public class UserService implements UserDetailsService {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
-//    public String authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
-//        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
-//        if (authentication.isAuthenticated()) {
-//            Optional<User> user = userRepository.findByUsername(authRequest.getUsername());
-//            return jwtService.generateToken(authRequest.getUsername(),user.get().getId());
-//        } else {
-//            throw new UsernameNotFoundException("invalid user request !");
-//        }
-//    }
 }

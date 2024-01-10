@@ -33,6 +33,17 @@ public class ProductController {
     public ResponseEntity<List<Product>> myProducts(@RequestHeader(value = "Authorization") String authorizationHeader){
         return productService.myProducts(authorizationHeader);
     }
+
+    @GetMapping("/approvedProducts")
+    public ResponseEntity<List<Product>> getApprovedProducts(){
+        return productService.approvedProduct();
+    }
+
+    @GetMapping("/getAllProducts")
+    public ResponseEntity<List<Product>> getAllProducts(){
+        return productService.getAllProduct();
+    }
+
 }
 
 

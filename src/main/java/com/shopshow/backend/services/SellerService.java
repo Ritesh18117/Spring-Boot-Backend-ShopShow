@@ -36,7 +36,7 @@ public class SellerService {
 //    }
 
 
-    public ResponseEntity<Seller> newSeller(@RequestBody Seller seller){
+    public ResponseEntity<Seller> newSeller(Seller seller){
         try{
             sellerRepository.save(seller);
             return ResponseEntity.of(Optional.of(seller));
@@ -66,7 +66,9 @@ public class SellerService {
             Optional<Seller> optionalSeller = getSellerById(authorizationHeader).getBody();
             if (optionalSeller.isPresent()) {
                 Seller existingSeller = optionalSeller.get();
-                // Copy updated fields from updatedSeller to existingSeller
+                updatedSeller.setUser(optionalSeller.get().getUser());
+                String existingApprovalStatus = optionalSeller.get().getApprovalStatus();
+                updatedSeller.setApprovalStatus(existingApprovalStatus);
                 BeanUtils.copyProperties(updatedSeller, existingSeller, "id");
                 Seller savedSeller = sellerRepository.save(existingSeller);
                 return ResponseEntity.of(Optional.of(savedSeller));

@@ -20,7 +20,7 @@ public class Customer {
 //    @Size(min = 8, message = "Size must be atleast of 8 Character")
 //    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",message = "Password Constraint Violation")
 //    private String password;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
     private String contact;
