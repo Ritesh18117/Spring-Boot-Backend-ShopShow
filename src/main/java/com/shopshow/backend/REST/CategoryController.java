@@ -4,6 +4,7 @@ import com.shopshow.backend.entities.Category;
 import com.shopshow.backend.services.CategoryServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,12 +19,12 @@ public class CategoryController {
     public String test(){
         return "Hello World from Category!!";
     }
-
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/getAll")
     public ResponseEntity<List<Category>> getAllCategory(){
         return categoryServices.getAllCategory();
     }
-
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/addCategory")
     public ResponseEntity<Category> addCategory(@RequestBody Category category){
         return categoryServices.addCategory(category);

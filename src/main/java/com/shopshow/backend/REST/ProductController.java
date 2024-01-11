@@ -38,7 +38,7 @@ public class ProductController {
     public ResponseEntity<List<Product>> getApprovedProducts(){
         return productService.approvedProduct();
     }
-
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/getAllProducts")
     public ResponseEntity<List<Product>> getAllProducts(){
         return productService.getAllProduct();

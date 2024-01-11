@@ -27,6 +27,7 @@ public class AddressService {
     @Autowired
     private JwtService jwtService;
 
+    //For Testing it's here afterward move to AdminService
     public ResponseEntity<List<Address>> getAllAddress(){
         try{
             List<Address> addresses = (List<Address>) addressRepository.findAll();
@@ -70,10 +71,26 @@ public class AddressService {
         }
     }
 
-    public ResponseEntity<String> deleteAddress(long id){
+    public ResponseEntity<String> deleteAddress(long id,@RequestHeader(value = "Authorization") String authorizationHeader){
         try{
-            addressRepository.deleteById(id);
-            return ResponseEntity.ok("Deleted Sucessfully!!");
+            String token = extractTokenFromHeader(authorizationHeader);
+            String username = jwtService.extractUsername(token);
+            Long userId = userRepository.findByUsername(username).getId();
+            if( userId != null && Objects.equals(userRepository.findByUsername(username).getRole(), "ROLE_CUSTOMER")){
+                Customer customer = customerRepository.findByUserId(userId);
+                Optional<Address> address = addressRepository.findById(id);
+                if(customer.getId() == address.get().getCustomer().getId()){
+                    addressRepository.deleteById(id);
+                    return ResponseEntity.ok("Deleted Sucessfully!!");
+                }
+                else{
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                }
+            }else {
+                return ResponseEntity.of(Optional.of("Something Went Wrong!1"));
+            }
+
+
         } catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

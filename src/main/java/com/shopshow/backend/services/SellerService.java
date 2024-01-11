@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -22,18 +23,19 @@ public class SellerService {
     @Autowired
     private JwtService jwtService;
 
-//    public ResponseEntity<List<Seller>> getAllSeller(){
-//        try{
-//            List<Seller> list = (List<Seller>) sellerRepository.findAll();
-//            if(list.size() <= 0){
-//                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-//            }
-//            return ResponseEntity.of(Optional.of(list));
-//        } catch (Exception e){
-//            e.printStackTrace();
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-//        }
-//    }
+    // It is here for testing else move to AdminService
+    public ResponseEntity<List<Seller>> getAllSeller(){
+        try{
+            List<Seller> list = (List<Seller>) sellerRepository.findAll();
+            if(list.size() <= 0){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+            return ResponseEntity.of(Optional.of(list));
+        } catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
 
     public ResponseEntity<Seller> newSeller(Seller seller){

@@ -4,6 +4,7 @@ import com.shopshow.backend.entities.Size;
 import com.shopshow.backend.services.SizeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class SizeController {
     public ResponseEntity<List<Size>> getAllSize(){
         return sizeService.getAllSize();
     }
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/addSize")
     public ResponseEntity<Size> addSize(@RequestBody Size size){
         return sizeService.addSize(size);

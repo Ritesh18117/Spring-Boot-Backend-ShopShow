@@ -2,7 +2,6 @@ package com.shopshow.backend.REST;
 
 import com.shopshow.backend.entities.Customer;
 import com.shopshow.backend.services.CustomerService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,17 +22,17 @@ public class CustomerController {
 
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     @GetMapping("/myProfile")
-    public ResponseEntity<Customer> getCustomerById(@RequestHeader(value = "Authorization") String authorizationHeader){
-        return customerService.getCustomerById(authorizationHeader);
+    public ResponseEntity<Customer> myProfile(@RequestHeader(value = "Authorization") String authorizationHeader){
+        return customerService.myProfile(authorizationHeader);
     }
 
-    @PostMapping("/addCustomer")
-    public ResponseEntity<Customer> addCustomer(@Valid @RequestBody Customer customer){
-        return customerService.addCustomer(customer);
-    }
+//    @PostMapping("/addCustomer")
+//    public ResponseEntity<Customer> addCustomer(@Valid @RequestBody Customer customer){
+//        return customerService.addCustomer(customer);
+//    }
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     @PatchMapping("/updateCustomer")
     public ResponseEntity<Customer> updateCustomer(@RequestBody Customer updateCustomer,@RequestHeader(value = "Authorization") String authorizationHeader){
-        return customerService.updateCustomerProfile(updateCustomer,authorizationHeader);
+        return customerService.updateProfile(updateCustomer,authorizationHeader);
     }
 }

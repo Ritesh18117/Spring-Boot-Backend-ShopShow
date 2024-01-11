@@ -87,7 +87,7 @@ public class CartItemsService {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
+    // For testing it's here else move to AdminService
     public ResponseEntity<List<CartItems>> getAllCartItems(){
         try{
             List<CartItems> cartItems = (List<CartItems>) cartItemsRepository.findAll();
@@ -98,39 +98,60 @@ public class CartItemsService {
         }
     }
 
-    public ResponseEntity<String> addQuantity(Long cartItemId){
+    public ResponseEntity<String> addQuantity(Long cartItemId,@RequestHeader(value = "Authorization") String authorizationHeader){
         try {
+            String token = extractTokenFromHeader(authorizationHeader);
+            String username = jwtService.extractUsername(token);
+            Long userId = userRepository.findByUsername(username).getId();
+            Customer customer = customerRepository.findByUserId(userId);
+
             Optional<CartItems> existingCartItemOptional = cartItemsRepository.findById(cartItemId);
             if (existingCartItemOptional.isPresent()) {
-                CartItems existingCartItem = existingCartItemOptional.get();
-                existingCartItem.setQuantity(existingCartItem.getQuantity() + 1);
-                // Save the updated cart item
-                cartItemsRepository.save(existingCartItem);
-                return ResponseEntity.ok("Updated Successfully!");
+                if(customer.getId() == existingCartItemOptional.get().getCustomer().getId()) {
+                    CartItems existingCartItem = existingCartItemOptional.get();
+                    existingCartItem.setQuantity(existingCartItem.getQuantity() + 1);
+                    // Save the updated cart item
+                    cartItemsRepository.save(existingCartItem);
+                    return ResponseEntity.ok("Updated Successfully!");
+                }
+                else {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                }
+            }else {
+                return ResponseEntity.ok("Cart item not found");
             }
-            return ResponseEntity.ok("Cart item not found");
         } catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    public ResponseEntity<String> substractQuantity(Long cartItemId){
+    public ResponseEntity<String> substractQuantity(Long cartItemId,@RequestHeader(value = "Authorization") String authorizationHeader){
         try {
+            String token = extractTokenFromHeader(authorizationHeader);
+            String username = jwtService.extractUsername(token);
+            Long userId = userRepository.findByUsername(username).getId();
+            Customer customer = customerRepository.findByUserId(userId);
+
             Optional<CartItems> existingCartItemOptional = cartItemsRepository.findById(cartItemId);
             if (existingCartItemOptional.isPresent()) {
-                CartItems existingCartItem = existingCartItemOptional.get();
-                if(existingCartItem.getQuantity() >= 0){
-                    existingCartItem.setQuantity(existingCartItem.getQuantity() + 1);
-                }
-                else{
+                if(customer.getId() == existingCartItemOptional.get().getCustomer().getId()) {
+                    CartItems existingCartItem = existingCartItemOptional.get();
+                    if (existingCartItem.getQuantity() == 1) {
+                        existingCartItem.setQuantity(existingCartItem.getQuantity() - 1);
+                    } else {
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+                    }
+                    // Save the updated cart item
+                    cartItemsRepository.save(existingCartItem);
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
                 }
-                // Save the updated cart item
-                cartItemsRepository.save(existingCartItem);
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+                else{
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                }
+            }else {
+                return ResponseEntity.ok("Cart item not found");
             }
-            return ResponseEntity.ok("Cart item not found");
         } catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

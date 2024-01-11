@@ -4,6 +4,7 @@ import com.shopshow.backend.entities.ProductVariation;
 import com.shopshow.backend.services.ProductVariationServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public class ProductVariationController {
     public ResponseEntity<List<ProductVariation>> getAllProductVariation(){
         return productVariationServices.getAllProductVariation();
     }
-
+    @PreAuthorize("hasRole('ROLE_SELLER')")
     @PostMapping("/addProductVariation")
     public ResponseEntity<ProductVariation> addProductVariation(@RequestBody ProductVariation productVariation){
         return productVariationServices.addProductVariation(productVariation);

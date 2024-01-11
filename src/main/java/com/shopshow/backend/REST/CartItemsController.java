@@ -37,15 +37,15 @@ public class CartItemsController {
     }
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     @PostMapping("/addQuantity/{cartItemId}")
-    public ResponseEntity<String> addQuantity(@PathVariable Long id) {
-        return cartItemsService.addQuantity(id);
+    public ResponseEntity<String> addQuantity(@PathVariable Long id,@RequestHeader(value = "Authorization") String authorizationHeader) {
+        return cartItemsService.addQuantity(id,authorizationHeader);
     }
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     @PostMapping("/substarctQuantity/{cartItemId}")
-    public ResponseEntity<String> substarctQuantity(@PathVariable Long id) {
-        return cartItemsService.substractQuantity(id);
+    public ResponseEntity<String> substarctQuantity(@PathVariable Long id,@RequestHeader(value = "Authorization") String authorizationHeader) {
+        return cartItemsService.substractQuantity(id,authorizationHeader);
     }
-
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/getAll")
     public ResponseEntity<List<CartItems>> getAllCartItems(){
         return cartItemsService.getAllCartItems();

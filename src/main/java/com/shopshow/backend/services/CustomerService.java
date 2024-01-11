@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -22,17 +23,18 @@ public class CustomerService {
     @Autowired
     private JwtService jwtService;
 
-//    public ResponseEntity<List<Customer>> getAllCustomer(){
-//        try{
-//            List<Customer> customers = (List<Customer>) customerRepository.findAll();
-//            if(customers.size() <= 0)
-//                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-//            return ResponseEntity.of(Optional.of(customers));
-//        } catch (Exception e){
-//            e.printStackTrace();
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-//        }
-//    }
+    // For testing it's here else move to AdminService
+    public ResponseEntity<List<Customer>> getAllCustomer(){
+        try{
+            List<Customer> customers = (List<Customer>) customerRepository.findAll();
+            if(customers.size() <= 0)
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.of(Optional.of(customers));
+        } catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
     public ResponseEntity<Customer> addCustomer(@RequestBody Customer customer){
         try{
@@ -44,7 +46,7 @@ public class CustomerService {
         }
     }
 
-    public ResponseEntity<Customer> getCustomerById(@RequestHeader(value = "Authorization") String authorizationHeader){
+    public ResponseEntity<Customer> myProfile(@RequestHeader(value = "Authorization") String authorizationHeader){
         try{
             String token = extractTokenFromHeader(authorizationHeader);
             String username = jwtService.extractUsername(token);
@@ -57,9 +59,9 @@ public class CustomerService {
         }
     }
 
-    public ResponseEntity<Customer> updateCustomerProfile(@RequestBody Customer updatedCustomer, @RequestHeader(value = "Authorization") String authorizationHeader){
+    public ResponseEntity<Customer> updateProfile(@RequestBody Customer updatedCustomer, @RequestHeader(value = "Authorization") String authorizationHeader){
         try {
-            Customer existingCustomer = getCustomerById(authorizationHeader).getBody();
+            Customer existingCustomer = myProfile(authorizationHeader).getBody();
             // Copy updated fields from updatedSeller to existingSeller
             updatedCustomer.setUser(existingCustomer.getUser());
             BeanUtils.copyProperties(updatedCustomer, existingCustomer, "id");

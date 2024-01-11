@@ -27,12 +27,10 @@ public class SellerController {
     public ResponseEntity<Optional<Seller>> getSellerById(@RequestHeader(value = "Authorization") String authorizationHeader){
         return sellerService.getSellerById(authorizationHeader);
     }
-
     @PostMapping("/newSeller")
     public ResponseEntity<Seller> newSeller(@Valid @RequestBody Seller seller){
         return sellerService.newSeller(seller);
     }
-
     @PreAuthorize("hasRole('ROLE_SELLER')")
     @PatchMapping("/updateProfile")
     public ResponseEntity<Seller> updateSellerProfile(@RequestBody Seller updatedSeller,@RequestHeader(value = "Authorization") String authorizationHeader){

@@ -4,6 +4,7 @@ import com.shopshow.backend.entities.Address;
 import com.shopshow.backend.services.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,21 +20,24 @@ public class AddressController {
         return "This is test from Address Controller!";
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/getAll")
     public ResponseEntity<List<Address>> getAllAddress(){
         return addressService.getAllAddress();
     }
-
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     @GetMapping("/myAddresses")
     public ResponseEntity<List<Address>> getMyAddresses(@RequestHeader(value = "Authorization") String authorizationHeader){
         return addressService.myAddresses(authorizationHeader);
     }
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     @PostMapping("/addAddress")
     public ResponseEntity<Address> addAddress(@RequestBody Address address,@RequestHeader(value = "Authorization") String authorizationHeader){
         return addressService.addAddress(address,authorizationHeader);
     }
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     @DeleteMapping("/deleteAddress/{id}")
-    public ResponseEntity<String> deleteAddress(@PathVariable("id") long id){
-        return addressService.deleteAddress(id);
+    public ResponseEntity<String> deleteAddress(@PathVariable("id") long id, @RequestHeader(value = "Authorization") String authorizationHeader){
+        return addressService.deleteAddress(id, authorizationHeader);
     }
 }
