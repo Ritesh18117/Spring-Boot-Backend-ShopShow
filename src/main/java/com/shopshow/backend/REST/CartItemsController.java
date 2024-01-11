@@ -12,7 +12,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/cart")
 public class CartItemsController {
-
     @Autowired
     private CartItemsService cartItemsService;
 
@@ -35,5 +34,20 @@ public class CartItemsController {
     @DeleteMapping("/removeItem/{product_id}")
     public ResponseEntity<String> removeItem(@RequestHeader(value = "Authorization") String authorizationHeader,@PathVariable Long product_id){
         return cartItemsService.removeCartItem(authorizationHeader,product_id);
+    }
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+    @PostMapping("/addQuantity/{cartItemId}")
+    public ResponseEntity<String> addQuantity(@PathVariable Long id) {
+        return cartItemsService.addQuantity(id);
+    }
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+    @PostMapping("/substarctQuantity/{cartItemId}")
+    public ResponseEntity<String> substarctQuantity(@PathVariable Long id) {
+        return cartItemsService.substractQuantity(id);
+    }
+
+    @GetMapping("/getAll")
+    public ResponseEntity<List<CartItems>> getAllCartItems(){
+        return cartItemsService.getAllCartItems();
     }
 }

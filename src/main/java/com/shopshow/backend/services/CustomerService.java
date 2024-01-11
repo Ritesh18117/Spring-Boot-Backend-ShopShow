@@ -59,11 +59,12 @@ public class CustomerService {
 
     public ResponseEntity<Customer> updateCustomerProfile(@RequestBody Customer updatedCustomer, @RequestHeader(value = "Authorization") String authorizationHeader){
         try {
-            Customer existingSeller = getCustomerById(authorizationHeader).getBody();
+            Customer existingCustomer = getCustomerById(authorizationHeader).getBody();
             // Copy updated fields from updatedSeller to existingSeller
-            BeanUtils.copyProperties(updatedCustomer, existingSeller, "id");
-            Customer savedSeller = customerRepository.save(existingSeller);
-            return ResponseEntity.of(Optional.of(savedSeller));
+            updatedCustomer.setUser(existingCustomer.getUser());
+            BeanUtils.copyProperties(updatedCustomer, existingCustomer, "id");
+            Customer savedCustomer = customerRepository.save(existingCustomer);
+            return ResponseEntity.of(Optional.of(savedCustomer));
         }catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

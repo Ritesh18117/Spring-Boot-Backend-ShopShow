@@ -1,5 +1,6 @@
 package com.shopshow.backend.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -17,6 +18,7 @@ public class CartItems {
     @JoinColumn(name = "product_id")
     private Product product;
     private int quantity;
+    @JsonFormat(pattern = "yyyy/MM/dd")
     private Date addedDate;
 
     public CartItems() {

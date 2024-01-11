@@ -2,9 +2,11 @@ package com.shopshow.backend.services;
 
 import com.shopshow.backend.dao.CartItemsRepository;
 import com.shopshow.backend.dao.CustomerRepository;
+import com.shopshow.backend.dao.ProductRepository;
 import com.shopshow.backend.dao.UserRepository;
 import com.shopshow.backend.entities.CartItems;
 import com.shopshow.backend.entities.Customer;
+import com.shopshow.backend.entities.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Component
@@ -26,6 +29,8 @@ public class CartItemsService {
     private UserRepository userRepository;
     @Autowired
     private CustomerRepository customerRepository;
+    @Autowired
+    private ProductRepository productRepository;
 
     public ResponseEntity<List<CartItems>> getMyCart(@RequestHeader(value = "Authorization") String authorizationHeader){
         try{
@@ -42,13 +47,19 @@ public class CartItemsService {
     }
     public ResponseEntity<CartItems> addToCart(@RequestHeader(value = "Authorization") String authorizationHeader, @RequestBody CartItems cartItems){
         try{
-            String token = extractTokenFromHeader(authorizationHeader);
-            String username = jwtService.extractUsername(token);
-            Long userId = userRepository.findByUsername(username).getId();
-            Customer customer = customerRepository.findByUserId(userId);
-            cartItems.setCustomer(customer);
-            cartItemsRepository.save(cartItems);
-            return ResponseEntity.of(Optional.of(cartItems));
+            Optional<Product> product = productRepository.findById(cartItems.getProduct().getId());
+            System.out.println(product.get().getApprovalStatus());
+            if(Objects.equals(product.get().getApprovalStatus(), "true")) {
+                String token = extractTokenFromHeader(authorizationHeader);
+                String username = jwtService.extractUsername(token);
+                Long userId = userRepository.findByUsername(username).getId();
+                Customer customer = customerRepository.findByUserId(userId);
+                cartItems.setCustomer(customer);
+                cartItemsRepository.save(cartItems);
+                return ResponseEntity.of(Optional.of(cartItems));
+            }
+            else
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -76,4 +87,54 @@ public class CartItemsService {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    public ResponseEntity<List<CartItems>> getAllCartItems(){
+        try{
+            List<CartItems> cartItems = (List<CartItems>) cartItemsRepository.findAll();
+            return ResponseEntity.of(Optional.of(cartItems));
+        } catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    public ResponseEntity<String> addQuantity(Long cartItemId){
+        try {
+            Optional<CartItems> existingCartItemOptional = cartItemsRepository.findById(cartItemId);
+            if (existingCartItemOptional.isPresent()) {
+                CartItems existingCartItem = existingCartItemOptional.get();
+                existingCartItem.setQuantity(existingCartItem.getQuantity() + 1);
+                // Save the updated cart item
+                cartItemsRepository.save(existingCartItem);
+                return ResponseEntity.ok("Updated Successfully!");
+            }
+            return ResponseEntity.ok("Cart item not found");
+        } catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    public ResponseEntity<String> substractQuantity(Long cartItemId){
+        try {
+            Optional<CartItems> existingCartItemOptional = cartItemsRepository.findById(cartItemId);
+            if (existingCartItemOptional.isPresent()) {
+                CartItems existingCartItem = existingCartItemOptional.get();
+                if(existingCartItem.getQuantity() >= 0){
+                    existingCartItem.setQuantity(existingCartItem.getQuantity() + 1);
+                }
+                else{
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+                }
+                // Save the updated cart item
+                cartItemsRepository.save(existingCartItem);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
+            return ResponseEntity.ok("Cart item not found");
+        } catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 }
