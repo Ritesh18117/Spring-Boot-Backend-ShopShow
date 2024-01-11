@@ -26,8 +26,8 @@ public class ProductVariationController {
     }
     @PreAuthorize("hasRole('ROLE_SELLER')")
     @PostMapping("/addProductVariation")
-    public ResponseEntity<ProductVariation> addProductVariation(@RequestBody ProductVariation productVariation){
-        return productVariationServices.addProductVariation(productVariation);
+    public ResponseEntity<ProductVariation> addProductVariation(@RequestHeader(value = "Authorization") String authorizationHeader,@RequestBody ProductVariation productVariation){
+        return productVariationServices.addProductVariation(authorizationHeader,productVariation);
     }
 
 }
