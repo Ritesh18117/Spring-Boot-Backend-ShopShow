@@ -1,8 +1,10 @@
 package com.shopshow.backend.services;
 
+import com.shopshow.backend.dao.ProductRepository;
 import com.shopshow.backend.dao.ProductVariationRepository;
 import com.shopshow.backend.dao.SellerRepository;
 import com.shopshow.backend.dao.UserRepository;
+import com.shopshow.backend.entities.Product;
 import com.shopshow.backend.entities.ProductVariation;
 import com.shopshow.backend.entities.Seller;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Component
@@ -25,6 +28,8 @@ public class ProductVariationServices {
     private UserRepository userRepository;
     @Autowired
     private SellerRepository sellerRepository;
+    @Autowired
+    private ProductRepository productRepository;
 
     public ResponseEntity<List<ProductVariation>> getAllProductVariation(){
         try{
@@ -45,9 +50,43 @@ public class ProductVariationServices {
             System.out.println(username);
             Long userId = userRepository.findByUsername(username).getId();
             Seller seller = sellerRepository.findByUserId(userId);
-            if (seller.getId() == productVariation.getProduct().getSeller().getId()){
-                productVariationRepository.save(productVariation);
-                return ResponseEntity.of(Optional.of(productVariation));
+            Optional<Product> product = productRepository.findById(productVariation.getProduct().getId());
+            if (Objects.equals(seller.getId(), product.get().getSeller().getId())){
+                if(Objects.equals(product.get().getApprovalStatus(), "true")){
+                    productVariationRepository.save(productVariation);
+                    return ResponseEntity.of(Optional.of(productVariation));
+                }
+                else {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                }
+            }
+            else{
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    public ResponseEntity<Optional<ProductVariation>> updateProductVariation(@RequestHeader(value = "Authorization") String authorizationHeader, @RequestBody ProductVariation updatedproductVariation){
+        try{
+            String token = extractTokenFromHeader(authorizationHeader);
+            String username = jwtService.extractUsername(token);
+            System.out.println(username);
+            Long userId = userRepository.findByUsername(username).getId();
+            Seller seller = sellerRepository.findByUserId(userId);
+            Optional<Product> product = productRepository.findById(updatedproductVariation.getProduct().getId());
+            if (seller.getId() == product.get().getSeller().getId()){
+                if(Objects.equals(product.get().getApprovalStatus(), "true")){
+                    Optional<ProductVariation> existingProductVariation = productVariationRepository.findById(updatedproductVariation.getId());
+                    existingProductVariation.get().setQuantity(updatedproductVariation.getQuantity());
+                    productVariationRepository.save(existingProductVariation.get());
+                    return ResponseEntity.of(Optional.of(existingProductVariation));
+                }
+                else {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                }
             }
             else{
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

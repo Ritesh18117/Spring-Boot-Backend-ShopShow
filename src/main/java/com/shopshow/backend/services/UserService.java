@@ -42,6 +42,11 @@ public class UserService implements UserDetailsService {
     }
     public ResponseEntity<List<User>> getAllUser(){
         try{
+            // Test for change Password ===============
+//            Optional<User> user = userRepository.findById(21L);
+//            user.get().setPassword(encoder.encode("shopshow@shopshow.com"));
+//            userRepository.save(user.get());
+            // ===================
             List<User> users = (List<User>) userRepository.findAll();
             if(users.size() <= 0)
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

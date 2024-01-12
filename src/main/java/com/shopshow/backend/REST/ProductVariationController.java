@@ -8,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/productVariation")
@@ -28,6 +29,12 @@ public class ProductVariationController {
     @PostMapping("/addProductVariation")
     public ResponseEntity<ProductVariation> addProductVariation(@RequestHeader(value = "Authorization") String authorizationHeader,@RequestBody ProductVariation productVariation){
         return productVariationServices.addProductVariation(authorizationHeader,productVariation);
+    }
+
+    @PreAuthorize("hasRole('ROLE_SELLER')")
+    @PatchMapping("/updateProductVariation")
+    public ResponseEntity<Optional<ProductVariation>> updateProductVariation(@RequestHeader(value = "Authorization") String authorizationHeader, @RequestBody ProductVariation productVariation){
+        return productVariationServices.updateProductVariation(authorizationHeader,productVariation);
     }
 
 }
