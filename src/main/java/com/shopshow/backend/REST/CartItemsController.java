@@ -1,5 +1,6 @@
 package com.shopshow.backend.REST;
 
+import com.shopshow.backend.dto.CartItemRequest;
 import com.shopshow.backend.entities.CartItems;
 import com.shopshow.backend.services.CartItemsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,14 +28,15 @@ public class CartItemsController {
     }
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     @PostMapping("/addToCart")
-    public ResponseEntity<CartItems> addToCart(@RequestHeader(value = "Authorization") String authorizationHeader, @RequestBody CartItems cartItems) {
-        return cartItemsService.addToCart(authorizationHeader, cartItems);
+    public ResponseEntity<CartItems> addToCart(@RequestHeader(value = "Authorization") String authorizationHeader, @RequestBody CartItemRequest cartItemRequest) {
+        return cartItemsService.addToCart(authorizationHeader, cartItemRequest);
     }
-    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-    @DeleteMapping("/removeItem/{product_id}")
-    public ResponseEntity<String> removeItem(@RequestHeader(value = "Authorization") String authorizationHeader,@PathVariable Long product_id){
-        return cartItemsService.removeCartItem(authorizationHeader,product_id);
-    }
+
+//    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+//    @DeleteMapping("/removeItem/{productVariation_id}")
+//    public ResponseEntity<String> removeItem(@RequestHeader(value = "Authorization") String authorizationHeader,@PathVariable Long productVariation_id){
+//        return cartItemsService.removeCartItem(authorizationHeader,productVariation_id);
+//    }
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     @PostMapping("/addQuantity/{cartItemId}")
     public ResponseEntity<String> addQuantity(@PathVariable Long id,@RequestHeader(value = "Authorization") String authorizationHeader) {

@@ -1,20 +1,21 @@
 package com.shopshow.backend.services;
 
-import com.shopshow.backend.dao.CartItemsRepository;
-import com.shopshow.backend.dao.CustomerRepository;
-import com.shopshow.backend.dao.ProductRepository;
-import com.shopshow.backend.dao.UserRepository;
+import com.shopshow.backend.dao.*;
+import com.shopshow.backend.dto.CartItemRequest;
 import com.shopshow.backend.entities.CartItems;
 import com.shopshow.backend.entities.Customer;
 import com.shopshow.backend.entities.Product;
+import com.shopshow.backend.entities.ProductVariation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -31,6 +32,8 @@ public class CartItemsService {
     private CustomerRepository customerRepository;
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private ProductVariationRepository productVariationRepository;
 
     public ResponseEntity<List<CartItems>> getMyCart(@RequestHeader(value = "Authorization") String authorizationHeader){
         try{
@@ -45,16 +48,23 @@ public class CartItemsService {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-    public ResponseEntity<CartItems> addToCart(@RequestHeader(value = "Authorization") String authorizationHeader, @RequestBody CartItems cartItems){
+    public ResponseEntity<CartItems> addToCart(@RequestHeader(value = "Authorization") String authorizationHeader, @RequestBody CartItemRequest cartItemRequest){
         try{
-            Optional<Product> product = productRepository.findById(cartItems.getProduct().getId());
+            ProductVariation productVariation = productVariationRepository.findByProductIdAndColorIdAndSizeId(cartItemRequest.getProduct_id(),cartItemRequest.getColor_id(),cartItemRequest.getSize_id());
+            Optional<Product> product = productRepository.findById(cartItemRequest.getProduct_id());
             System.out.println(product.get().getApprovalStatus());
-            if(Objects.equals(product.get().getApprovalStatus(), "true")) {
+            if(Objects.equals(product.get().getApprovalStatus(), "true") && productVariation != null) {
                 String token = extractTokenFromHeader(authorizationHeader);
                 String username = jwtService.extractUsername(token);
                 Long userId = userRepository.findByUsername(username).getId();
                 Customer customer = customerRepository.findByUserId(userId);
+
+                CartItems cartItems = new CartItems();
                 cartItems.setCustomer(customer);
+                cartItems.setProduct(product.get());
+                cartItems.setProductVariation(productVariation);
+                cartItems.setQuantity(cartItemRequest.getQuantity());
+                cartItems.setAddedDate(Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()));
                 cartItemsRepository.save(cartItems);
                 return ResponseEntity.of(Optional.of(cartItems));
             }
@@ -74,19 +84,36 @@ public class CartItemsService {
         return null; // Return null or handle accordingly if token extraction fails
     }
 
-    public ResponseEntity<String> removeCartItem(@RequestHeader(value = "Authorization") String authorizationHeader,@PathVariable Long productId) {
-        try{
-            String token = extractTokenFromHeader(authorizationHeader);
-            String username = jwtService.extractUsername(token);
-            Long userId = userRepository.findByUsername(username).getId();
-            Customer customer = customerRepository.findByUserId(userId);
-            cartItemsRepository.deleteByCustomerIdAndProductId(customer.getId(),productId);
-            return ResponseEntity.ok("Item Removed Successfully!!");
-        }catch (Exception e){
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
+//    public ResponseEntity<String> removeCartItem(@RequestHeader(value = "Authorization") String authorizationHeader,@PathVariable Long productVariationId) {
+//        try{
+//            String token = extractTokenFromHeader(authorizationHeader);
+//            String username = jwtService.extractUsername(token);
+//            Long userId = userRepository.findByUsername(username).getId();
+//            Customer customer = customerRepository.findByUserId(userId);
+//            System.out.println(customer.getId());
+//            System.out.println(cartItemsRepository.findByCustomerIdAndProductVariationId(customer.getId(),productVariationId).getId());
+//            cartItemsRepository.deleteByCustomerIdAndProductVariationId(customer.getId(),productVariationId);
+//            return ResponseEntity.ok("Item Removed Successfully!!");
+//        }catch (Exception e){
+//            e.printStackTrace();
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+//        }
+//    }
+
+    //    public ResponseEntity<String> removeCartItem(@RequestHeader(value = "Authorization") String authorizationHeader,@PathVariable Long productId) {
+//        try{
+//            String token = extractTokenFromHeader(authorizationHeader);
+//            String username = jwtService.extractUsername(token);
+//            Long userId = userRepository.findByUsername(username).getId();
+//            Customer customer = customerRepository.findByUserId(userId);
+//            cartItemsRepository.deleteByCustomerIdAndProductId(customer.getId(),productId);
+//            return ResponseEntity.ok("Item Removed Successfully!!");
+//        }catch (Exception e){
+//            e.printStackTrace();
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+//        }
+//    }
+
     // For testing it's here else move to AdminService
     public ResponseEntity<List<CartItems>> getAllCartItems(){
         try{

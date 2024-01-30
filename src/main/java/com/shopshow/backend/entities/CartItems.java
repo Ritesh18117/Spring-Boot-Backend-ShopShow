@@ -15,6 +15,9 @@ public class CartItems {
     @JoinColumn(name = "customer_id")
     private Customer customer;
     @ManyToOne
+    @JoinColumn(name = "product_variation_id")
+    private ProductVariation productVariation;
+    @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
     private int quantity;
@@ -24,16 +27,32 @@ public class CartItems {
     public CartItems() {
     }
 
-    public CartItems(Long id, Customer customer, Product product, int quantity, Date addedDate) {
+    public ProductVariation getProductVariation() {
+        return productVariation;
+    }
+
+    public void setProductVariation(ProductVariation productVariation) {
+        this.productVariation = productVariation;
+    }
+
+    public CartItems(Long id, Customer customer, ProductVariation productVariation, int quantity, Date addedDate) {
         this.id = id;
         this.customer = customer;
-        this.product = product;
+        this.productVariation = productVariation;
         this.quantity = quantity;
         this.addedDate = addedDate;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public void setId(Long id) {
@@ -46,14 +65,6 @@ public class CartItems {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
     }
 
     public int getQuantity() {
