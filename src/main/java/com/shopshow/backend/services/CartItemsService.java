@@ -84,35 +84,24 @@ public class CartItemsService {
         return null; // Return null or handle accordingly if token extraction fails
     }
 
-//    public ResponseEntity<String> removeCartItem(@RequestHeader(value = "Authorization") String authorizationHeader,@PathVariable Long productVariationId) {
-//        try{
-//            String token = extractTokenFromHeader(authorizationHeader);
-//            String username = jwtService.extractUsername(token);
-//            Long userId = userRepository.findByUsername(username).getId();
-//            Customer customer = customerRepository.findByUserId(userId);
-//            System.out.println(customer.getId());
-//            System.out.println(cartItemsRepository.findByCustomerIdAndProductVariationId(customer.getId(),productVariationId).getId());
-//            cartItemsRepository.deleteByCustomerIdAndProductVariationId(customer.getId(),productVariationId);
-//            return ResponseEntity.ok("Item Removed Successfully!!");
-//        }catch (Exception e){
-//            e.printStackTrace();
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-//        }
-//    }
+    public ResponseEntity<String> removeCartItem(@RequestHeader(value = "Authorization") String authorizationHeader, Long productVariationId) {
+        try{
+            String token = extractTokenFromHeader(authorizationHeader);
+            String username = jwtService.extractUsername(token);
+            Long userId = userRepository.findByUsername(username).getId();
+            Customer customer = customerRepository.findByUserId(userId);
+            System.out.println(customer.getId());
+            System.out.println(cartItemsRepository.findByCustomerIdAndProductVariationId(customer.getId(),productVariationId).getId());
+            Long cartItemId = cartItemsRepository.findByCustomerIdAndProductVariationId(customer.getId(),productVariationId).getId();
+            cartItemsRepository.deleteById(cartItemId);
+            return ResponseEntity.ok("Item Removed Successfully!!");
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
-    //    public ResponseEntity<String> removeCartItem(@RequestHeader(value = "Authorization") String authorizationHeader,@PathVariable Long productId) {
-//        try{
-//            String token = extractTokenFromHeader(authorizationHeader);
-//            String username = jwtService.extractUsername(token);
-//            Long userId = userRepository.findByUsername(username).getId();
-//            Customer customer = customerRepository.findByUserId(userId);
-//            cartItemsRepository.deleteByCustomerIdAndProductId(customer.getId(),productId);
-//            return ResponseEntity.ok("Item Removed Successfully!!");
-//        }catch (Exception e){
-//            e.printStackTrace();
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-//        }
-//    }
+
 
     // For testing it's here else move to AdminService
     public ResponseEntity<List<CartItems>> getAllCartItems(){

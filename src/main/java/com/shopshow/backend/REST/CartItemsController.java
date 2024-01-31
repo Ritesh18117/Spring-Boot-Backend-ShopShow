@@ -32,11 +32,11 @@ public class CartItemsController {
         return cartItemsService.addToCart(authorizationHeader, cartItemRequest);
     }
 
-//    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-//    @DeleteMapping("/removeItem/{productVariation_id}")
-//    public ResponseEntity<String> removeItem(@RequestHeader(value = "Authorization") String authorizationHeader,@PathVariable Long productVariation_id){
-//        return cartItemsService.removeCartItem(authorizationHeader,productVariation_id);
-//    }
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+    @DeleteMapping("/removeItem/{productVariation_id}")
+    public ResponseEntity<String> removeItem(@RequestHeader(value = "Authorization") String authorizationHeader,@PathVariable Long productVariation_id){
+        return cartItemsService.removeCartItem(authorizationHeader,productVariation_id);
+    }
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     @PostMapping("/addQuantity/{cartItemId}")
     public ResponseEntity<String> addQuantity(@PathVariable Long id,@RequestHeader(value = "Authorization") String authorizationHeader) {
