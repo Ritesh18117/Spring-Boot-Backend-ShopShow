@@ -46,6 +46,7 @@ public class AddressService {
             String username = jwtService.extractUsername(token);
             Long userId = userRepository.findByUsername(username).getId();
             Customer customer = customerRepository.findByUserId(userId);
+            customer.getUser().setUsername(null);
             List<Address> addresses = addressRepository.getAddressesByCustomerId(customer.getId());
             return ResponseEntity.of(Optional.of(addresses));
         }catch (Exception e){
@@ -56,14 +57,19 @@ public class AddressService {
 
     public ResponseEntity<Address> addAddress(@RequestBody Address address,@RequestHeader(value = "Authorization") String authorizationHeader){
         try{
+            System.out.println(address.getName());
             String token = extractTokenFromHeader(authorizationHeader);
             String username = jwtService.extractUsername(token);
             Long userId = userRepository.findByUsername(username).getId();
             if( userId != null && Objects.equals(userRepository.findByUsername(username).getRole(), "ROLE_CUSTOMER")){
                 Customer customer = customerRepository.findByUserId(userId);
+                System.out.println(address.getCity());
+                System.out.println(address.getCustomer());
                 address.setCustomer(customer);
+                System.out.println(address.getCustomer());
             }
             addressRepository.save(address);
+            System.out.println("HEllo");
             return ResponseEntity.of(Optional.of(address));
         } catch (Exception e){
             e.printStackTrace();
@@ -89,8 +95,6 @@ public class AddressService {
             }else {
                 return ResponseEntity.of(Optional.of("Something Went Wrong!1"));
             }
-
-
         } catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

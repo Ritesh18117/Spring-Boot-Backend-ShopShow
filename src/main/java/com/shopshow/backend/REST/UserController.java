@@ -1,5 +1,6 @@
 package com.shopshow.backend.REST;
 
+import com.shopshow.backend.dao.UserRepository;
 import com.shopshow.backend.entities.AuthRequest;
 import com.shopshow.backend.entities.User;
 import com.shopshow.backend.services.JwtService;
@@ -14,7 +15,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/user")
@@ -24,6 +27,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     private JwtService jwtService;
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -38,14 +43,23 @@ public class UserController {
     }
 
     @PostMapping("/generateToken")
-    public String authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
+    public Map<String, String> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
         System.out.println(authRequest);
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
-        System.out.println(authentication.isAuthenticated());
-        if (authentication.isAuthenticated()) {
-            return jwtService.generateToken(authRequest.getUsername());
-        } else {
-            throw new UsernameNotFoundException("invalid user request !");
+        User user = userRepository.findByUsername(authRequest.getUsername());
+        if(user != null){
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
+            System.out.println(authentication.isAuthenticated());
+            if (authentication.isAuthenticated()) {
+                String token = jwtService.generateToken(authRequest.getUsername());
+                Map<String, String> response = new HashMap<>();
+                response.put("role",user.getRole());
+                response.put("token", token);
+                return response;
+            } else {
+                throw new UsernameNotFoundException("invalid user request !");
+            }
+        }else {
+            throw new UsernameNotFoundException("invalid User!!");
         }
     }
     // It is here for testing

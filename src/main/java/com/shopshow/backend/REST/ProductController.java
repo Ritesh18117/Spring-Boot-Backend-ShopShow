@@ -8,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -35,7 +36,7 @@ public class ProductController {
     }
 
     @GetMapping("/approvedProducts")
-    public ResponseEntity<List<Product>> getApprovedProducts(){
+    public ResponseEntity<ArrayList> getApprovedProducts(){
         return productService.approvedProduct();
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")

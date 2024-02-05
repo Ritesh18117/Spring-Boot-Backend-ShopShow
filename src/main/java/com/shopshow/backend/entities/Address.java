@@ -11,6 +11,8 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "address_id")
     private Long id;
+    private String name;
+    private String contact;
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
@@ -32,15 +34,33 @@ public class Address {
     public Address() {
     }
 
-    public Address(Long id, Customer customer, String address1, String address2, String city, String state, String country, String pincode) {
+    public Address(Long id,String name,String contact, Customer customer, String address1, String address2, String city, String state, String country, String pincode) {
         this.customer = customer;
         this.id = id;
+        this.name = name;
+        this.contact = contact;
         this.address1 = address1;
         this.address2 = address2;
         this.city = city;
         this.state = state;
         this.country = country;
         this.zipcode = pincode;
+    }
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Long getId() {

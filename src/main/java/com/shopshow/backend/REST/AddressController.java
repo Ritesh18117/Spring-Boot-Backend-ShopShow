@@ -5,6 +5,7 @@ import com.shopshow.backend.services.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,6 +32,7 @@ public class AddressController {
         return addressService.myAddresses(authorizationHeader);
     }
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+    @Transactional
     @PostMapping("/addAddress")
     public ResponseEntity<Address> addAddress(@RequestBody Address address,@RequestHeader(value = "Authorization") String authorizationHeader){
         return addressService.addAddress(address,authorizationHeader);

@@ -11,8 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 public class CustomerService {
@@ -52,6 +51,7 @@ public class CustomerService {
             String username = jwtService.extractUsername(token);
             Long userId = userRepository.findByUsername(username).getId();
             Customer customer = customerRepository.findByUserId(userId);
+            customer.getUser().setPassword(null);
             return ResponseEntity.of(Optional.of(customer));
         } catch (Exception e){
             e.printStackTrace();
