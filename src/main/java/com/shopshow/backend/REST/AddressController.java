@@ -38,6 +38,7 @@ public class AddressController {
         return addressService.addAddress(address,authorizationHeader);
     }
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+    @Transactional
     @DeleteMapping("/deleteAddress/{id}")
     public ResponseEntity<String> deleteAddress(@PathVariable("id") long id, @RequestHeader(value = "Authorization") String authorizationHeader){
         return addressService.deleteAddress(id, authorizationHeader);
