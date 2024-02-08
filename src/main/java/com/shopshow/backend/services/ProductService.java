@@ -93,7 +93,6 @@ public class ProductService {
                 List<String> sizeQuanList = groupedData.get(key);
                 sizeQuanList.add(pv.getSize().getSize() + ", " + pv.getQuantity());
             }
-
             // Convert to JSON
             List<Map<String, Object>> outputList = new ArrayList<>();
             for (Map.Entry<String, List<String>> entry : groupedData.entrySet()) {

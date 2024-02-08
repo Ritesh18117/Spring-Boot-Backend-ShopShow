@@ -50,7 +50,6 @@ public class ProductVariationServices {
         try{
             String token = extractTokenFromHeader(authorizationHeader);
             String username = jwtService.extractUsername(token);
-            System.out.println(username);
             Long userId = userRepository.findByUsername(username).getId();
             Seller seller = sellerRepository.findByUserId(userId);
             Optional<Product> product = productRepository.findById(productVariation.getProduct().getId());

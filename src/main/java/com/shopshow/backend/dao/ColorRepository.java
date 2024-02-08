@@ -4,4 +4,5 @@ import com.shopshow.backend.entities.Color;
 import org.springframework.data.repository.CrudRepository;
 
 public interface ColorRepository extends CrudRepository<Color,Long> {
+    Color findByColor(String color);
 }

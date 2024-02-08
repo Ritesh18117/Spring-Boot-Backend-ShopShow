@@ -35,9 +35,10 @@ public class CartItems {
         this.productVariation = productVariation;
     }
 
-    public CartItems(Long id, Customer customer, ProductVariation productVariation, int quantity, Date addedDate) {
+    public CartItems(Long id,Product product, Customer customer, ProductVariation productVariation, int quantity, Date addedDate) {
         this.id = id;
         this.customer = customer;
+        this.product = product;
         this.productVariation = productVariation;
         this.quantity = quantity;
         this.addedDate = addedDate;

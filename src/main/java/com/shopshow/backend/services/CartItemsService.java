@@ -2,10 +2,7 @@ package com.shopshow.backend.services;
 
 import com.shopshow.backend.dao.*;
 import com.shopshow.backend.dto.CartItemRequest;
-import com.shopshow.backend.entities.CartItems;
-import com.shopshow.backend.entities.Customer;
-import com.shopshow.backend.entities.Product;
-import com.shopshow.backend.entities.ProductVariation;
+import com.shopshow.backend.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +30,10 @@ public class CartItemsService {
     @Autowired
     private ProductRepository productRepository;
     @Autowired
+    private  ColorRepository colorRepository;
+    @Autowired
+    private  SizeRepository sizeRepository;
+    @Autowired
     private ProductVariationRepository productVariationRepository;
 
     public ResponseEntity<List<CartItems>> getMyCart(@RequestHeader(value = "Authorization") String authorizationHeader){
@@ -50,7 +51,9 @@ public class CartItemsService {
     }
     public ResponseEntity<CartItems> addToCart(@RequestHeader(value = "Authorization") String authorizationHeader, @RequestBody CartItemRequest cartItemRequest){
         try{
-            ProductVariation productVariation = productVariationRepository.findByProductIdAndColorIdAndSizeId(cartItemRequest.getProduct_id(),cartItemRequest.getColor_id(),cartItemRequest.getSize_id());
+            Color color = colorRepository.findByColor(cartItemRequest.getColor());
+            Size size = sizeRepository.findBySize(cartItemRequest.getSize());
+            ProductVariation productVariation = productVariationRepository.findByProductIdAndColorIdAndSizeId(cartItemRequest.getProduct_id(),color.getId(),size.getId());
             Optional<Product> product = productRepository.findById(cartItemRequest.getProduct_id());
             System.out.println(product.get().getApprovalStatus());
             if(Objects.equals(product.get().getApprovalStatus(), "true") && productVariation != null) {

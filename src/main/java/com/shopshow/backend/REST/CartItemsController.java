@@ -29,6 +29,12 @@ public class CartItemsController {
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     @PostMapping("/addToCart")
     public ResponseEntity<CartItems> addToCart(@RequestHeader(value = "Authorization") String authorizationHeader, @RequestBody CartItemRequest cartItemRequest) {
+//        {
+//            "product_id": 7,
+//                "color": "Orange",
+//                "size": "8",
+//                "quantity": 1
+//        }
         return cartItemsService.addToCart(authorizationHeader, cartItemRequest);
     }
 
