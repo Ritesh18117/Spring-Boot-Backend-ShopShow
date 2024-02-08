@@ -19,14 +19,14 @@ public class ColorController {
     public String test(){
         return "This is test from Color Controller";
     }
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+
     @GetMapping("/getAll")
     public ResponseEntity<List<Color>> getAllColor(){
         return colorService.getAllColor();
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/addColor")
-    private ResponseEntity<Color> addColor(@RequestBody Color color){
+    public ResponseEntity<Color> addColor(@RequestBody Color color){
         return colorService.addColor(color);
     }
 }

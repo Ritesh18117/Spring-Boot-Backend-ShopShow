@@ -56,6 +56,7 @@ public class SellerService {
             Long userId = userRepository.findByUsername(username).getId();
             System.out.println("Seller Id from id route : " + userId);
             Seller seller =sellerRepository.findByUserId(userId);
+            seller.getUser().setPassword(null);
             return ResponseEntity.of(Optional.of(Optional.of(seller)));
         } catch (Exception e){
             e.printStackTrace();
@@ -65,18 +66,21 @@ public class SellerService {
 
     public ResponseEntity<Seller> updateSellerProfile(@RequestBody Seller updatedSeller,@RequestHeader(value = "Authorization") String authorizationHeader){
         try {
-            Optional<Seller> optionalSeller = getSellerById(authorizationHeader).getBody();
-            if (optionalSeller.isPresent()) {
-                Seller existingSeller = optionalSeller.get();
-                updatedSeller.setUser(optionalSeller.get().getUser());
-                String existingApprovalStatus = optionalSeller.get().getApprovalStatus();
-                updatedSeller.setApprovalStatus(existingApprovalStatus);
-                BeanUtils.copyProperties(updatedSeller, existingSeller, "id");
-                Seller savedSeller = sellerRepository.save(existingSeller);
-                return ResponseEntity.of(Optional.of(savedSeller));
-            } else {
-                return ResponseEntity.notFound().build();
-            }
+            String token = extractTokenFromHeader(authorizationHeader);
+            String username = jwtService.extractUsername(token);
+            Long userId = userRepository.findByUsername(username).getId();
+            Seller existingSeller = sellerRepository.findByUserId(userId);
+
+            String existingApprovalStatus = existingSeller.getApprovalStatus();
+            updatedSeller.setApprovalStatus(existingApprovalStatus);
+
+            updatedSeller.setUser(existingSeller.getUser());
+
+            BeanUtils.copyProperties(updatedSeller, existingSeller, "id");
+            Seller savedSeller = sellerRepository.save(existingSeller);
+
+            savedSeller.getUser().setPassword(null);
+            return ResponseEntity.of(Optional.of(savedSeller));
         }catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

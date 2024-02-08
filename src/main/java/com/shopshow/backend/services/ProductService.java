@@ -39,6 +39,7 @@ public class ProductService {
             product.setApprovalStatus("false");
             if(Objects.equals(seller.getApprovalStatus(), "true")){
                 productRepository.save(product);
+                product.setSeller(null);
                 return ResponseEntity.of(Optional.of(product));
             }
             else{
@@ -66,6 +67,9 @@ public class ProductService {
             Long userId = userRepository.findByUsername(username).getId();
             Seller seller = sellerRepository.findByUserId(userId);
             List<Product> products = productRepository.findBySeller_Id(seller.getId());
+            for(Product product : products){
+                product.setSeller(null);
+            }
             return ResponseEntity.of(Optional.of(products));
         } catch (Exception e){
             e.printStackTrace();

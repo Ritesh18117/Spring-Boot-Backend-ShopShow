@@ -36,6 +36,9 @@ public class ProductVariationServices {
             List<ProductVariation> productVariations = (List<ProductVariation>) productVariationRepository.findAll();
             if(productVariations.size() <= 0)
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            for(ProductVariation productVariation : productVariations){
+                Long product_id = productVariation.getProduct().getId();
+            }
             return ResponseEntity.of(Optional.of(productVariations));
         } catch (Exception e){
             e.printStackTrace();

@@ -2,8 +2,6 @@ package com.shopshow.backend.entities;
 
 import jakarta.persistence.*;
 
-import java.util.List;
-
 @Entity
 @Table(name = "colors")
 public class Color {
@@ -20,7 +18,7 @@ public class Color {
         this.id = id;
         this.color = color;
     }
-
+    
     public Long getId() {
         return id;
     }

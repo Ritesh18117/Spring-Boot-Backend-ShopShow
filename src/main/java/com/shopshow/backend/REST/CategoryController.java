@@ -19,7 +19,7 @@ public class CategoryController {
     public String test(){
         return "Hello World from Category!!";
     }
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+
     @GetMapping("/getAll")
     public ResponseEntity<List<Category>> getAllCategory(){
         return categoryServices.getAllCategory();

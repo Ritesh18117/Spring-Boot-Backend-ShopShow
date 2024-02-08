@@ -11,7 +11,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 @Component
 public class CustomerService {
@@ -61,11 +62,17 @@ public class CustomerService {
 
     public ResponseEntity<Customer> updateProfile(@RequestBody Customer updatedCustomer, @RequestHeader(value = "Authorization") String authorizationHeader){
         try {
-            Customer existingCustomer = myProfile(authorizationHeader).getBody();
-            // Copy updated fields from updatedSeller to existingSeller
+            String token = extractTokenFromHeader(authorizationHeader);
+            String username = jwtService.extractUsername(token);
+            Long userId = userRepository.findByUsername(username).getId();
+            Customer existingCustomer = customerRepository.findByUserId(userId);
+
             updatedCustomer.setUser(existingCustomer.getUser());
+
             BeanUtils.copyProperties(updatedCustomer, existingCustomer, "id");
             Customer savedCustomer = customerRepository.save(existingCustomer);
+
+            savedCustomer.getUser().setPassword(null);
             return ResponseEntity.of(Optional.of(savedCustomer));
         }catch (Exception e){
             e.printStackTrace();
