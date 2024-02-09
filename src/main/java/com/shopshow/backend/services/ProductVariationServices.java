@@ -99,6 +99,19 @@ public class ProductVariationServices {
         }
     }
 
+    public ResponseEntity<ProductVariation> getProductVariationById(Long id){
+        try{
+            Optional<ProductVariation> productVariation = productVariationRepository.findById(id);
+            if(productVariation.isPresent()){
+                return ResponseEntity.of(Optional.of(productVariation.get()));
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch(Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
     private String extractTokenFromHeader(String authorizationHeader) {
         // Check if the Authorization header is not null and starts with "Bearer "
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {

@@ -37,4 +37,9 @@ public class ProductVariationController {
         return productVariationServices.updateProductVariation(authorizationHeader,productVariation);
     }
 
+    @GetMapping("/getProductVariationById/{id}")
+    public ResponseEntity<ProductVariation> getProductVariationById(@PathVariable Long id){
+        return productVariationServices.getProductVariationById(id);
+    }
+
 }

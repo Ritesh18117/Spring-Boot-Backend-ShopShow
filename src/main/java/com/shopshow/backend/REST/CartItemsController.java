@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/cart")
@@ -39,19 +40,20 @@ public class CartItemsController {
     }
 
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-    @DeleteMapping("/removeItem/{productVariation_id}")
-    public ResponseEntity<String> removeItem(@RequestHeader(value = "Authorization") String authorizationHeader,@PathVariable Long productVariation_id){
-        return cartItemsService.removeCartItem(authorizationHeader,productVariation_id);
+    @DeleteMapping("/removeItem/{cartItem_id}")
+    public ResponseEntity<Map<String, String>> removeItem(@RequestHeader(value = "Authorization") String authorizationHeader, @PathVariable Long cartItem_id){
+        return cartItemsService.removeCartItem(authorizationHeader,cartItem_id);
     }
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-    @PostMapping("/addQuantity/{cartItemId}")
-    public ResponseEntity<String> addQuantity(@PathVariable Long id,@RequestHeader(value = "Authorization") String authorizationHeader) {
-        return cartItemsService.addQuantity(id,authorizationHeader);
+    @PatchMapping("/addQuantity/{cartItemId}")
+    public ResponseEntity<Map<String, String>> addQuantity(@PathVariable("cartItemId") Long cartItemId, @RequestHeader(value = "Authorization") String authorizationHeader) {
+        return cartItemsService.addQuantity(cartItemId, authorizationHeader);
     }
+
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-    @PostMapping("/substarctQuantity/{cartItemId}")
-    public ResponseEntity<String> substarctQuantity(@PathVariable Long id,@RequestHeader(value = "Authorization") String authorizationHeader) {
-        return cartItemsService.substractQuantity(id,authorizationHeader);
+    @PatchMapping("/substarctQuantity/{cartItemId}")
+    public ResponseEntity<Map<String, String>> substarctQuantity(@PathVariable("cartItemId") Long cartItemId, @RequestHeader(value = "Authorization") String authorizationHeader) {
+        return cartItemsService.substractQuantity(cartItemId,authorizationHeader);
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/getAll")

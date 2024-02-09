@@ -12,10 +12,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 public class CartItemsService {
@@ -43,6 +40,11 @@ public class CartItemsService {
             Long userId = userRepository.findByUsername(username).getId();
             Customer customer = customerRepository.findByUserId(userId);
             List<CartItems> cartItems = cartItemsRepository.findAllByCustomerId(customer.getId());
+            for(CartItems x : cartItems){
+                x.setCustomer(null);
+                x.getProduct().setSeller(null);
+                x.getProductVariation().setProduct(null);
+            }
             return ResponseEntity.of(Optional.of(cartItems));
         } catch (Exception e){
             e.printStackTrace();
@@ -87,20 +89,25 @@ public class CartItemsService {
         return null; // Return null or handle accordingly if token extraction fails
     }
 
-    public ResponseEntity<String> removeCartItem(@RequestHeader(value = "Authorization") String authorizationHeader, Long productVariationId) {
-        try{
+    public ResponseEntity<Map<String, String>> removeCartItem(@RequestHeader(value = "Authorization") String authorizationHeader, Long cartItem_id) {
+        try {
             String token = extractTokenFromHeader(authorizationHeader);
             String username = jwtService.extractUsername(token);
             Long userId = userRepository.findByUsername(username).getId();
             Customer customer = customerRepository.findByUserId(userId);
-            System.out.println(customer.getId());
-            System.out.println(cartItemsRepository.findByCustomerIdAndProductVariationId(customer.getId(),productVariationId).getId());
-            Long cartItemId = cartItemsRepository.findByCustomerIdAndProductVariationId(customer.getId(),productVariationId).getId();
-            cartItemsRepository.deleteById(cartItemId);
-            return ResponseEntity.ok("Item Removed Successfully!!");
-        }catch (Exception e){
+
+            if (customer != null) {
+                cartItemsRepository.deleteById(cartItem_id);
+                Map<String, String> response = new HashMap<>();
+                response.put("message", "Item Removed Successfully!!");
+                return ResponseEntity.ok(response);
+            }
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // Or another appropriate HTTP status
+
+        } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
@@ -117,7 +124,7 @@ public class CartItemsService {
         }
     }
 
-    public ResponseEntity<String> addQuantity(Long cartItemId,@RequestHeader(value = "Authorization") String authorizationHeader){
+    public ResponseEntity<Map<String, String>> addQuantity(Long cartItemId,@RequestHeader(value = "Authorization") String authorizationHeader){
         try {
             String token = extractTokenFromHeader(authorizationHeader);
             String username = jwtService.extractUsername(token);
@@ -131,13 +138,17 @@ public class CartItemsService {
                     existingCartItem.setQuantity(existingCartItem.getQuantity() + 1);
                     // Save the updated cart item
                     cartItemsRepository.save(existingCartItem);
-                    return ResponseEntity.ok("Updated Successfully!");
+                    Map<String, String> response = new HashMap<>();
+                    response.put("message", "Updated Successfully!");
+                    return ResponseEntity.ok(response);
                 }
                 else {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
                 }
             }else {
-                return ResponseEntity.ok("Cart item not found");
+                Map<String, String> response = new HashMap<>();
+                response.put("message", "Cart item not found");
+                return ResponseEntity.ok(response);
             }
         } catch (Exception e){
             e.printStackTrace();
@@ -145,7 +156,7 @@ public class CartItemsService {
         }
     }
 
-    public ResponseEntity<String> substractQuantity(Long cartItemId,@RequestHeader(value = "Authorization") String authorizationHeader){
+    public ResponseEntity<Map<String, String>> substractQuantity(Long cartItemId,@RequestHeader(value = "Authorization") String authorizationHeader){
         try {
             String token = extractTokenFromHeader(authorizationHeader);
             String username = jwtService.extractUsername(token);
@@ -156,20 +167,24 @@ public class CartItemsService {
             if (existingCartItemOptional.isPresent()) {
                 if(customer.getId() == existingCartItemOptional.get().getCustomer().getId()) {
                     CartItems existingCartItem = existingCartItemOptional.get();
-                    if (existingCartItem.getQuantity() == 1) {
+                    if (existingCartItem.getQuantity() > 1) {
                         existingCartItem.setQuantity(existingCartItem.getQuantity() - 1);
                     } else {
                         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
                     }
                     // Save the updated cart item
                     cartItemsRepository.save(existingCartItem);
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+                    Map<String, String> response = new HashMap<>();
+                    response.put("message", "Updated Successfully!");
+                    return ResponseEntity.ok(response);
                 }
                 else{
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
                 }
             }else {
-                return ResponseEntity.ok("Cart item not found");
+                Map<String, String> response = new HashMap<>();
+                response.put("message", "Cart item not found");
+                return ResponseEntity.ok(response);
             }
         } catch (Exception e){
             e.printStackTrace();
