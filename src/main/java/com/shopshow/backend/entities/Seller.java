@@ -21,6 +21,9 @@ public class Seller {
     private String gstNumber;
     @Column(name = "licence_number")
     private String licenceNumber;
+    @Column(name = "contact_email")
+    private String contactEmail;
+    private String website;
     private String address;
     private String approvalStatus;
 
@@ -28,7 +31,7 @@ public class Seller {
     }
 
     public Seller(Long sellerId, User user, String contactInfo, String companyName,
-                  String companyType, String gstNumber, String licenceNumber, String address, String approvalStatus) {
+                  String companyType, String gstNumber, String licenceNumber,String contactEmail,String website, String address, String approvalStatus) {
         this.id = sellerId;
         this.user = user;
         this.contactInfo = contactInfo;
@@ -36,8 +39,26 @@ public class Seller {
         this.companyType = companyType;
         this.gstNumber = gstNumber;
         this.licenceNumber = licenceNumber;
+        this.contactEmail = contactEmail;
+        this.website = website;
         this.address = address;
         this.approvalStatus = approvalStatus;
+    }
+
+    public String getContactEmail() {
+        return contactEmail;
+    }
+
+    public void setContactEmail(String contactEmail) {
+        this.contactEmail = contactEmail;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
     }
 
     public Long getId() {
