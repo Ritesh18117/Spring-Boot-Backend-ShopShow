@@ -77,31 +77,28 @@ public class ProductService {
         }
     }
 
-    public ResponseEntity<ArrayList> approvedProduct(){
-        try{
+    public ResponseEntity<List<Map<String, Object>>> approvedProducts(){
+        try {
             List<ProductVariation> productVariations = (List<ProductVariation>) productVariationRepository.findAll();
 
-            Map<String, List<String>> groupedData = new HashMap<>();
-
+            Map<String,List<String>> groupedData = new HashMap<>();
             for (ProductVariation pv : productVariations) {
-                String key = pv.getColor().getColor() + "_" + pv.getProduct().getId();
+                String key = String.valueOf(pv.getProduct().getId());
 
                 if (!groupedData.containsKey(key)) {
                     groupedData.put(key, new ArrayList<>());
                 }
 
                 List<String> sizeQuanList = groupedData.get(key);
-                sizeQuanList.add(pv.getSize().getSize() + ", " + pv.getQuantity());
+                sizeQuanList.add(pv.getSize() + ", " + pv.getQuantity());
             }
-            // Convert to JSON
+
             List<Map<String, Object>> outputList = new ArrayList<>();
             for (Map.Entry<String, List<String>> entry : groupedData.entrySet()) {
                 Map<String, Object> productGroup = new HashMap<>();
-                String[] keyParts = entry.getKey().split("_");
+                Optional<Product> product = productRepository.findById(Long.valueOf(entry.getKey()));
 
-                Optional<Product> product = productRepository.findById(Long.parseLong(keyParts[1]));
                 if(product.isPresent() && Objects.equals(product.get().getApprovalStatus(), "true")){
-                    productGroup.put("color", keyParts[0]);
                     product.get().setSeller(null);
                     product.get().setMargin(null);
                     productGroup.put("product", product);
@@ -112,7 +109,8 @@ public class ProductService {
                     continue;
                 }
             }
-            return ResponseEntity.of(Optional.of((ArrayList) outputList));
+//            System.out.println(outputList);
+            return ResponseEntity.of(Optional.of(outputList));
         } catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

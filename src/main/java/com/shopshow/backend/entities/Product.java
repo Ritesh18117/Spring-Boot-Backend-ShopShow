@@ -26,6 +26,7 @@ public class Product {
     @NotNull(message = "Margin cannot be null")
     private Double margin;
     private String gender;
+    private String color;
     private String description;
     private String imageURL;
     private String approvalStatus;
@@ -33,11 +34,12 @@ public class Product {
     public Product() {
     }
 
-    public Product(Long id, Seller seller, Category category, String name, Double price, Double discount, Double margin, String gender, String description, String imageURL, String approvalStatus) {
+    public Product(Long id, Seller seller, Category category, String color, String name, Double price, Double discount, Double margin, String gender, String description, String imageURL, String approvalStatus) {
         this.id = id;
         this.seller = seller;
         this.category = category;
         this.name = name;
+        this.color = color;
         this.price = price;
         this.discount = discount;
         this.margin = margin;
@@ -45,6 +47,14 @@ public class Product {
         this.description = description;
         this.imageURL = imageURL;
         this.approvalStatus = approvalStatus;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 
     public Long getId() {

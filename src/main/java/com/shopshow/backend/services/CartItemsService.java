@@ -2,7 +2,10 @@ package com.shopshow.backend.services;
 
 import com.shopshow.backend.dao.*;
 import com.shopshow.backend.dto.CartItemRequest;
-import com.shopshow.backend.entities.*;
+import com.shopshow.backend.entities.CartItems;
+import com.shopshow.backend.entities.Customer;
+import com.shopshow.backend.entities.Product;
+import com.shopshow.backend.entities.ProductVariation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,10 +30,6 @@ public class CartItemsService {
     @Autowired
     private ProductRepository productRepository;
     @Autowired
-    private  ColorRepository colorRepository;
-    @Autowired
-    private  SizeRepository sizeRepository;
-    @Autowired
     private ProductVariationRepository productVariationRepository;
 
     public ResponseEntity<List<CartItems>> getMyCart(@RequestHeader(value = "Authorization") String authorizationHeader){
@@ -51,13 +50,10 @@ public class CartItemsService {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-    public ResponseEntity<CartItems> addToCart(@RequestHeader(value = "Authorization") String authorizationHeader, @RequestBody CartItemRequest cartItemRequest){
+    public ResponseEntity<CartItems> addToCart(@RequestHeader(value = "Authorization") String authorizationHeader, @RequestBody CartItemRequest cartItemRequest) {
         try{
-            Color color = colorRepository.findByColor(cartItemRequest.getColor());
-            Size size = sizeRepository.findBySize(cartItemRequest.getSize());
-            ProductVariation productVariation = productVariationRepository.findByProductIdAndColorIdAndSizeId(cartItemRequest.getProduct_id(),color.getId(),size.getId());
-            Optional<Product> product = productRepository.findById(cartItemRequest.getProduct_id());
-            System.out.println(product.get().getApprovalStatus());
+            ProductVariation productVariation = productVariationRepository.findByProductIdAndSize(cartItemRequest.getProduct_id(),cartItemRequest.getSize());
+            Optional<Product> product = productRepository.findById(productVariation.getProduct().getId());
             if(Objects.equals(product.get().getApprovalStatus(), "true") && productVariation != null) {
                 String token = extractTokenFromHeader(authorizationHeader);
                 String username = jwtService.extractUsername(token);
@@ -75,7 +71,7 @@ public class CartItemsService {
             }
             else
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }catch (Exception e){
+        } catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

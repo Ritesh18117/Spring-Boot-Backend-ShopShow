@@ -13,28 +13,17 @@ public class ProductVariation {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "product_variation_id")
     private Long id;
-
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
-
-    @ManyToOne
-    @JoinColumn(name = "color_id")
-    private Color color;
-    @ManyToOne
-    @JoinColumn(name = "size_id")
-    private Size size;
-
-
+    private String size;
     private int quantity;
-
     public ProductVariation() {
     }
 
-    public ProductVariation(Long id, Product product, Color color, Size size, int quantity) {
+    public ProductVariation(Long id, Product product, String size, int quantity) {
         this.id = id;
         this.product = product;
-        this.color = color;
         this.size = size;
         this.quantity = quantity;
     }
@@ -55,19 +44,12 @@ public class ProductVariation {
         this.id = id;
     }
 
-    public Color getColor() {
-        return color;
-    }
 
-    public void setColor(Color color) {
-        this.color = color;
-    }
-
-    public Size getSize() {
+    public String getSize() {
         return size;
     }
 
-    public void setSize(Size size) {
+    public void setSize(String size) {
         this.size = size;
     }
 
@@ -84,9 +66,9 @@ public class ProductVariation {
         return "ProductVariation{" +
                 "id=" + id +
                 ", product=" + product +
-                ", color=" + color +
                 ", size=" + size +
                 ", quantity=" + quantity +
                 '}';
     }
+
 }

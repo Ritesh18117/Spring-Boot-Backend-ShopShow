@@ -8,8 +8,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/product")
@@ -36,8 +36,8 @@ public class ProductController {
     }
 
     @GetMapping("/approvedProducts")
-    public ResponseEntity<ArrayList> getApprovedProducts(){
-        return productService.approvedProduct();
+    public ResponseEntity<List<Map<String, Object>>> getApprovedProducts(){
+        return productService.approvedProducts();
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/getAllProducts")

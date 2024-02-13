@@ -2,15 +2,13 @@ package com.shopshow.backend.dto;
 
 public class CartItemRequest {
     private Long product_id;
-    private String color;
     private String size;
     private int quantity;
     public CartItemRequest() {
     }
 
-    public CartItemRequest(Long product_id, String color, String size, int quantity) {
+    public CartItemRequest(Long product_id,  String size, int quantity) {
         this.product_id = product_id;
-        this.color = color;
         this.size = size;
         this.quantity = quantity;
     }
@@ -21,14 +19,6 @@ public class CartItemRequest {
 
     public void setProduct_id(Long product_id) {
         this.product_id = product_id;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
     }
 
     public String getSize() {
